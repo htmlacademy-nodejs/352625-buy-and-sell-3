@@ -1,7 +1,7 @@
 # Учебный проект «Куплю. Продам» [![Build status][travis-image]][travis-url]
 
 * Студент: [Максим Акимов](https://up.htmlacademy.ru/nodejs/3/user/352625).
-* Наставник: `Неизвестно`.
+* Наставник: [Олег Поляков](https://htmlacademy.ru/profile/id1296165).
 
 ---
 
