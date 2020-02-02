@@ -7,40 +7,13 @@ const {
   ExitCode
 } = require(`./constants.js`);
 
-const {
-  getRandomInt,
-  shuffle
-} = require(`./../utils.js`);
+const {generateOffers} = require(`./../utils.js`);
 
 const {
   DEFAULT_COUNT,
   MAX_COUNT,
-  FILE_NAME,
-  TITLES,
-  SENTENCES,
-  CATEGORIES,
-  OfferType,
-  SumRestrict,
-  Picture
-} = require(`./mocks.js`);
-
-const getPictureFileName = (value) => {
-  if (value > Picture.Restrict.border) {
-    return `${Picture.NAME}${value}.${Picture.DIMENSION}`;
-  }
-  return `${Picture.NAME}0${value}.${Picture.DIMENSION}`;
-};
-
-const generateOffers = (count) => (
-  Array(count).fill({}).map(() => ({
-    category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]],
-    description: shuffle(SENTENCES).slice(1, 5).join(` `),
-    picture: getPictureFileName(getRandomInt(Picture.Restrict.min, Picture.Restrict.max)),
-    title: TITLES[getRandomInt(0, TITLES.length - 1)],
-    type: Object.keys(OfferType)[Math.floor(Math.random() * Object.keys(OfferType).length)],
-    sum: getRandomInt(SumRestrict.min, SumRestrict.max),
-  }))
-);
+  FILE_NAME
+} = require(`./mocksData.js`);
 
 module.exports = {
   name: CommandsNames.GENERATE,
@@ -52,10 +25,12 @@ module.exports = {
       const content = JSON.stringify(generateOffers(countOffer));
       fs.writeFile(FILE_NAME, content, (err) => {
         if (err) {
-          return console.error(`Can't write data to file...`);
+          console.error(`Can't write data to file...`);
+          process.exit(ExitCode.failure);
         }
 
-        return console.info(`Operation success. File created.`);
+        console.info(`Operation success. File created.`);
+        process.exit(ExitCode.success);
       });
 
     } else {
