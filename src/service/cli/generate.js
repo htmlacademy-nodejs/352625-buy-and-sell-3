@@ -1,6 +1,8 @@
 'use strict';
 
 const fs = require(`fs`);
+const chalk = require(`chalk`);
+const {promisify} = require(`util`);
 
 const {
   CommandsNames,
@@ -15,27 +17,33 @@ const {
   FILE_NAME
 } = require(`./mocksData.js`);
 
+const writeOffers = async (path, data) => {
+  const writeFile = promisify(fs.writeFile);
+
+  try {
+    await writeFile(path, data);
+    console.info(chalk.green(`Operation success. File created.`));
+
+  } catch (error) {
+    console.error(chalk.red(`Can't write data to file...`));
+    process.exit(ExitCode.failure);
+  }
+};
+
 module.exports = {
   name: CommandsNames.GENERATE,
   run(args) {
     const [count] = args;
     const countOffer = Math.abs(Number.parseInt(count, 10)) || DEFAULT_COUNT;
 
-    if (countOffer < MAX_COUNT) {
-      const content = JSON.stringify(generateOffers(countOffer));
-      fs.writeFile(FILE_NAME, content, (err) => {
-        if (err) {
-          console.error(`Can't write data to file...`);
-          process.exit(ExitCode.failure);
-        }
-
-        console.info(`Operation success. File created.`);
-        process.exit(ExitCode.success);
-      });
-
-    } else {
-      console.error(`Не больше ${MAX_COUNT} объявлений`);
+    if (countOffer >= MAX_COUNT) {
+      console.error(chalk.red(`Не больше ${MAX_COUNT} объявлений`));
       process.exit(ExitCode.failure);
     }
+
+    const content = JSON.stringify(generateOffers(countOffer));
+
+    writeOffers(FILE_NAME, content);
+
   }
 };
