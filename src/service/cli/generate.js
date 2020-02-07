@@ -5,17 +5,14 @@ const chalk = require(`chalk`);
 const {promisify} = require(`util`);
 
 const {
+  DEFAULT_COUNT,
+  MAX_COUNT,
+  FILE_NAME,
   CommandsNames,
   ExitCode
 } = require(`./constants.js`);
 
-const {generateOffers} = require(`./../utils.js`);
-
-const {
-  DEFAULT_COUNT,
-  MAX_COUNT,
-  FILE_NAME
-} = require(`./mocksData.js`);
+const {generateOffers, makeList} = require(`./../utils.js`);
 
 const writeOffers = async (path, data) => {
   const writeFile = promisify(fs.writeFile);
@@ -26,7 +23,19 @@ const writeOffers = async (path, data) => {
 
   } catch (error) {
     console.error(chalk.red(`Can't write data to file...`));
-    process.exit(ExitCode.failure);
+    process.exit(ExitCode.FAILURE);
+  }
+};
+
+const getFileData = async (path) => {
+  const readFile = promisify(fs.readFile);
+
+  try {
+    return makeList(await readFile(path, `utf8`));
+
+  } catch (error) {
+    console.error(`Can't read data from file... ${error}`);
+    return process.exit(ExitCode.FAILURE);
   }
 };
 
@@ -38,12 +47,21 @@ module.exports = {
 
     if (countOffer >= MAX_COUNT) {
       console.error(chalk.red(`Не больше ${MAX_COUNT} объявлений`));
-      process.exit(ExitCode.failure);
+      process.exit(ExitCode.FAILURE);
     }
 
-    const content = JSON.stringify(generateOffers(countOffer));
-
-    writeOffers(FILE_NAME, content);
-
+    Promise
+      .all([
+        getFileData(`./src/data/sentences.txt`),
+        getFileData(`./src/data/categories.txt`),
+        getFileData(`./src/data/titles.txt`),
+      ])
+      .then((result) => {
+        const sentences = result[0];
+        const categories = result[1];
+        const titles = result[2];
+        return JSON.stringify(generateOffers(countOffer, sentences, categories, titles));
+      })
+      .then((content) => writeOffers(FILE_NAME, content));
   }
 };
