@@ -1,9 +1,14 @@
 'use strict';
 
+const fs = require(`fs`);
+const chalk = require(`chalk`);
+const {promisify} = require(`util`);
+
 const {
   OfferType,
   SumRestrict,
-  Picture
+  Picture,
+  ExitCode
 } = require(`./cli/constants.js`);
 
 const getRandomInt = (min, max) => {
@@ -44,10 +49,36 @@ const makeList = (text) => text
   .split(`. `)
   .slice(0, -1);
 
+const getFileData = async (path) => {
+  const readFile = promisify(fs.readFile);
+
+  try {
+    return makeList(await readFile(path, `utf8`));
+
+  } catch (error) {
+    console.error(`Can't read data from file... ${error}`);
+    return process.exit(ExitCode.FAILURE);
+  }
+};
+
+const writeOffers = async (path, data) => {
+  const writeFile = promisify(fs.writeFile);
+
+  try {
+    await writeFile(path, data);
+    console.info(chalk.green(`Operation success. File created.`));
+
+  } catch (error) {
+    console.error(chalk.red(`Can't write data to file...`));
+    process.exit(ExitCode.FAILURE);
+  }
+};
+
 module.exports = {
   getRandomInt,
   shuffle,
   getPictureFileName,
   generateOffers,
-  makeList
+  getFileData,
+  writeOffers
 };

@@ -11,7 +11,6 @@ const OfferType = {
   SALE: `sale`,
 };
 
-
 const SumRestrict = {
   MIN: 1000,
   MAX: 100000,
@@ -42,6 +41,10 @@ const ExitCode = {
   FAILURE: 1
 };
 
+const FILE_SENTENCES_PATH = `./src/data/sentences.txt`;
+const FILE_CATEGORIES_PATH = `./src/data/categories.txt`;
+const FILE_TITLES_PATH = `./src/data/titles.txt`;
+
 module.exports = {
   DEFAULT_COUNT,
   MAX_COUNT,
@@ -52,5 +55,8 @@ module.exports = {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
   ExitCode,
-  CommandsNames
+  CommandsNames,
+  FILE_SENTENCES_PATH,
+  FILE_CATEGORIES_PATH,
+  FILE_TITLES_PATH
 };
