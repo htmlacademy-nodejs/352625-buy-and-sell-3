@@ -11,9 +11,10 @@ const message = `
     server <command>
     
     Команды:
-    ${CommandsNames.VERSION}:            выводит номер версии
-    ${CommandsNames.HELP}:               печатает этот текст
+    ${CommandsNames.VERSION}             выводит номер версии
+    ${CommandsNames.HELP}                печатает этот текст
     ${CommandsNames.GENERATE} <count>    формирует файл mocks.json
+    ${CommandsNames.SERVER} <port>       запускает dev-сервер
     `;
 
 module.exports = {
