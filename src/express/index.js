@@ -4,17 +4,21 @@ const express = require(`express`);
 const app = express();
 
 const {DEFAULT_PORT} = require(`./../service/cli/constants.js`);
+const PathName = require(`./routes/constants.js`);
 
-const {OFFERS_PATH_NAME, offersRouter} = require(`./routes/offers.js`);
-const {MY_PATH_NAME, myRouter} = require(`./routes/my.js`);
+const registerRouter = require(`./routes/register.js`);
+const loginRouter = require(`./routes/login.js`);
+const searchRouter = require(`./routes/search.js`);
+const offersRouter = require(`./routes/offers.js`);
+const myRouter = require(`./routes/my.js`);
 
 app.get(`/`, (req, res) => res.send(`/`));
-app.get(`/register`, (req, res) => res.send(`/register`));
-app.get(`/login`, (req, res) => res.send(`/login`));
-app.get(`/search`, (req, res) => res.send(`/search`));
 
-app.use(`/${MY_PATH_NAME}`, myRouter);
-app.use(`/${OFFERS_PATH_NAME}`, offersRouter);
+app.use(`/${PathName.REGISTER}`, registerRouter);
+app.use(`/${PathName.LOGIN}`, loginRouter);
+app.use(`/${PathName.SEARCH}`, searchRouter);
+app.use(`/${PathName.OFFERS}`, offersRouter);
+app.use(`/${PathName.MY}`, myRouter);
 
 app.listen(
     DEFAULT_PORT,
