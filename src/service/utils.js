@@ -3,12 +3,14 @@
 const fs = require(`fs`);
 const chalk = require(`chalk`);
 const {promisify} = require(`util`);
+const nanoid = require(`nanoid`);
 
 const {
   OfferType,
   SumRestrict,
   Picture,
   ExitCode,
+  Id,
 } = require(`./cli/constants.js`);
 
 const getRandomInt = (min, max) => {
@@ -33,14 +35,23 @@ const getPictureFileName = (value) => {
   return `${Picture.NAME}0${value}.${Picture.DIMENSION}`;
 };
 
-const generateOffers = (count, sentences, categories, titles) => (
+const getComments = (count, comments) => (
   Array(count).fill({}).map(() => ({
+    id: nanoid(Id.Length.COMMENT),
+    text: `${shuffle(comments).slice(1, getRandomInt(Id.Phrases.MIN, Id.Phrases.MAX)).join(`. `)}.`,
+  }))
+);
+
+const generateOffers = (count, sentences, categories, titles, comments) => (
+  Array(count).fill({}).map(() => ({
+    id: nanoid(Id.Length.OFFER),
     category: [categories[getRandomInt(0, categories.length - 1)]],
     description: `${shuffle(sentences).slice(1, 5).join(`. `)}.`,
     picture: getPictureFileName(getRandomInt(Picture.Restrict.MIN, Picture.Restrict.MAX)),
     title: titles[getRandomInt(0, titles.length - 1)],
     type: Object.values(OfferType)[Math.floor(Math.random() * Object.values(OfferType).length)],
     sum: getRandomInt(SumRestrict.MIN, SumRestrict.MAX),
+    comments: getComments(getRandomInt(Id.Restrict.MIN, Id.Restrict.MAX), comments),
   }))
 );
 
