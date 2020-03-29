@@ -8,11 +8,18 @@ const {
   DEFAULT_PORT,
 } = require(`./constants.js`);
 
-const homeRouter = require(`./../routes/home.js`);
+const {PathName} = require(`./../routes/constants.js`);
+
+const offersRouter = require(`./../routes/offers.js`);
+const categoriesRouter = require(`./../routes/categories.js`);
+const searchRouter = require(`./../routes/search.js`);
 
 const app = express();
 
-app.use(`/`, homeRouter);
+app.use(`/${PathName.OFFERS}`, offersRouter);
+app.use(`/${PathName.CATEGORIES}`, categoriesRouter);
+app.use(`/${PathName.SEARCH}`, searchRouter);
+
 app.use(express.json());
 
 app.set(`json spaces`, 2);
