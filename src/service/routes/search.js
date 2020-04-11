@@ -32,7 +32,6 @@ searchRouter.get(`/`, async (req, res) => {
     }
 
   } catch (error) {
-    res.json(Empty.SEARCH);
     logger.error(`No content, ${error}`);
   }
 });

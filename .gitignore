@@ -18,4 +18,4 @@ build/
 mocks.json
 
 # Папка с логами
-./src/service/logs
+logs/

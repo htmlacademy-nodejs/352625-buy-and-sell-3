@@ -4,50 +4,50 @@ const request = require(`supertest`);
 
 const {app} = require(`./../cli/server.js`);
 const {PathName, Empty, SEARCH_PARAM} = require(`./../routes/constants.js`);
+const fs = require(`fs`);
+const {promisify} = require(`util`);
+const {FILE_NAME, HttpCode} = require(`./../cli/constants.js`);
 
-const RIGHT_SEARCH = encodeURI(`Продам`);
-const WRONG_SEARCH = encodeURI(`ылдвапрдлорвап`);
+const readFile = promisify(fs.readFile);
+
+const RIGHT_SEARCH = `Продам`;
+const RIGHT_SEARCH_URI = encodeURI(RIGHT_SEARCH);
+
+const WRONG_SEARCH = `ылдвапрдлорвап`;
+const WRONG_SEARCH_URI = encodeURI(WRONG_SEARCH);
 
 describe(`When GET '/${PathName.SEARCH}'`, () => {
-  test(`status code should be 200`, async () => {
+  test(`status code should be ${HttpCode.OK}`, async () => {
     const res = await request(app).get(`/${PathName.SEARCH}`);
-    expect(res.statusCode).toBe(200);
+    expect(res.statusCode).toBe(HttpCode.OK);
   });
 
-  test(`request '${SEARCH_PARAM}${RIGHT_SEARCH}' returns array of objects`, async () => {
+  test(`request '${SEARCH_PARAM}${RIGHT_SEARCH_URI}' should return filtered offers by ${RIGHT_SEARCH} in title`, async () => {
     const res = await request(app)
-      .get(`/${PathName.SEARCH}${SEARCH_PARAM}${RIGHT_SEARCH}`);
+      .get(`/${PathName.SEARCH}${SEARCH_PARAM}${RIGHT_SEARCH_URI}`);
 
-    expect(Array.isArray(res.body)).toBeTruthy();
+    const mockOffers = JSON.parse(await readFile(FILE_NAME));
+    const searchResult = mockOffers
+      .filter((elem) => elem.title.includes(RIGHT_SEARCH));
 
-    for (let item of res.body) {
-      expect(typeof item).toBe(`object`);
-      expect(item).toHaveProperty(`id`);
-      expect(item).toHaveProperty(`category`);
-      expect(item).toHaveProperty(`description`);
-      expect(item).toHaveProperty(`picture`);
-      expect(item).toHaveProperty(`title`);
-      expect(item).toHaveProperty(`type`);
-      expect(item).toHaveProperty(`sum`);
-      expect(item).toHaveProperty(`comments`);
-    }
+    expect(res.body).toStrictEqual(searchResult);
   });
 
-  test(`blank search returns '${Empty.SEARCH}' string`, async () => {
+  test(`blank search returns '${Empty.SEARCH}'`, async () => {
     const res = await request(app)
       .get(`/${PathName.SEARCH}`);
     expect(res.body).toBe(Empty.SEARCH);
   });
 
-  test(`blank request '${SEARCH_PARAM}' returns '${Empty.SEARCH}' string`, async () => {
+  test(`blank request '${SEARCH_PARAM}' returns '${Empty.SEARCH}'`, async () => {
     const res = await request(app)
       .get(`/${PathName.SEARCH}${SEARCH_PARAM}`);
     expect(res.body).toBe(Empty.SEARCH);
   });
 
-  test(`wrong request '${SEARCH_PARAM}${WRONG_SEARCH}' returns '${Empty.SEARCH}' string`, async () => {
+  test(`wrong request '${SEARCH_PARAM}${WRONG_SEARCH_URI}' returns '${Empty.SEARCH}'`, async () => {
     const res = await request(app)
-      .get(`/${PathName.SEARCH}${SEARCH_PARAM}${WRONG_SEARCH}`);
+      .get(`/${PathName.SEARCH}${SEARCH_PARAM}${WRONG_SEARCH_URI}`);
     expect(res.body).toBe(Empty.SEARCH);
   });
 });
