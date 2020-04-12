@@ -1,7 +1,11 @@
 'use strict';
 
-const chalk = require(`chalk`);
 const express = require(`express`);
+
+const pino = require(`pino`)(`./logs/service.log`);
+const expressPino = require(`express-pino-logger`)({
+  logger: pino
+});
 
 const {
   CommandsNames,
@@ -13,6 +17,9 @@ const {PathName} = require(`./../routes/constants.js`);
 const offersRouter = require(`./../routes/offers.js`);
 const categoriesRouter = require(`./../routes/categories.js`);
 const searchRouter = require(`./../routes/search.js`);
+const {getLogger} = require(`./../logger.js`);
+
+const logger = getLogger();
 
 const app = express();
 
@@ -24,7 +31,10 @@ app.use(express.json());
 
 app.set(`json spaces`, 2);
 
+app.use(expressPino);
+
 module.exports = {
+  app,
   name: CommandsNames.SERVER,
   run(args) {
     const [customPort] = args;
@@ -32,7 +42,9 @@ module.exports = {
 
     app.listen(
         port,
-        () => console.log(chalk.green(`Сервер запущен на порту: ${port}`))
-    );
+        () => logger.info(`Server start on ${port}`))
+      .on(`error`, (err) => {
+        logger.error(`Server can't start. Error: ${err}`);
+      });
   }
 };

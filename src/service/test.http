@@ -27,7 +27,7 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:8080/api/offers/bqAVEA
+PUT http://localhost:8080/api/offers/ididid
 Content-Type: application/json
 
 {
@@ -46,7 +46,7 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:8080/api/offers/bqAVEA/comments
+PUT http://localhost:8080/api/offers/bqAEA/comments
 Content-Type: application/json
 
 {
