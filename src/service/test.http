@@ -1,6 +1,6 @@
 ###
 
-POST http://localhost:8080/api/offers
+POST http://localhost:3000/api/offers
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:8080/api/offers/ididid
+PUT http://localhost:3000/api/offers/ididid
 Content-Type: application/json
 
 {
@@ -36,17 +36,17 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:8080/api/offers/bqAVEA
+DELETE http://localhost:3000/api/offers/bqAVEA
 Content-Type: application/json
 
 ###
 
-DELETE http://localhost:8080/api/offers/bqAVEA/comments/XhOq
+DELETE http://localhost:3000/api/offers/bqAVEA/comments/XhOq
 Content-Type: application/json
 
 ###
 
-PUT http://localhost:8080/api/offers/bqAEA/comments
+PUT http://localhost:3000/api/offers/bqAEA/comments
 Content-Type: application/json
 
 {

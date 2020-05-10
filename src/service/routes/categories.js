@@ -17,21 +17,27 @@ const readFile = promisify(fs.readFile);
 categoriesRouter.get(`/`, async (req, res) => {
   try {
     const fileContent = await readFile(FILE_NAME);
+
     const result = Array
-      .from(new Set(JSON.parse(fileContent).map((elem) => elem.category[0] || Empty.DATA)));
+      .from(new Set(JSON
+        .parse(fileContent)
+        .map((elem) => elem.category || Empty.DATA)
+        .flat()
+        .map((item) => JSON.stringify(item))))
+      .map((item) => JSON.parse(item));
+
 
     if (result === [Empty.DATA]) {
       res.json(Empty.CATEGORIES);
-      logger.debug(`Client request to url /${PathName.CATEGORIES}${req.url}`);
-      logger.info(`End request with status code ${res.statusCode}`);
+      logger.debug(`${req.method} /${PathName.CATEGORIES}${req.url} --> res status code ${res.statusCode}`);
+
     } else {
       res.json(result);
-      logger.debug(`Client request to url /${PathName.CATEGORIES}${req.url}`);
-      logger.info(`End request with status code ${res.statusCode}`);
+      logger.debug(`${req.method} /${PathName.CATEGORIES}${req.url} --> res status code ${res.statusCode}`);
     }
 
   } catch (error) {
-    logger.error(`No content, ${error}`);
+    logger.error(`Error occurs: ${error}`);
   }
 });
 

@@ -10,7 +10,7 @@ const {FILE_NAME, HttpCode} = require(`./../cli/constants.js`);
 
 const readFile = promisify(fs.readFile);
 
-const RIGHT_SEARCH = `Продам`;
+const RIGHT_SEARCH = `кота`;
 const RIGHT_SEARCH_URI = encodeURI(RIGHT_SEARCH);
 
 const WRONG_SEARCH = `ылдвапрдлорвап`;
@@ -36,18 +36,21 @@ describe(`When GET '/${PathName.SEARCH}'`, () => {
   test(`blank search returns '${Empty.SEARCH}'`, async () => {
     const res = await request(app)
       .get(`/${PathName.SEARCH}`);
-    expect(res.body).toBe(Empty.SEARCH);
+
+    expect(res.body).toStrictEqual(Empty.SEARCH);
   });
 
   test(`blank request '${SEARCH_PARAM}' returns '${Empty.SEARCH}'`, async () => {
     const res = await request(app)
       .get(`/${PathName.SEARCH}${SEARCH_PARAM}`);
-    expect(res.body).toBe(Empty.SEARCH);
+
+    expect(res.body).toStrictEqual(Empty.SEARCH);
   });
 
   test(`wrong request '${SEARCH_PARAM}${WRONG_SEARCH_URI}' returns '${Empty.SEARCH}'`, async () => {
     const res = await request(app)
       .get(`/${PathName.SEARCH}${SEARCH_PARAM}${WRONG_SEARCH_URI}`);
-    expect(res.body).toBe(Empty.SEARCH);
+
+    expect(res.body).toStrictEqual(Empty.SEARCH);
   });
 });

@@ -22,17 +22,15 @@ searchRouter.get(`/`, async (req, res) => {
 
     if (result.length === 0 || req.query.query === Empty.DATA) {
       res.json(Empty.SEARCH);
-      logger.debug(`Client request to url /${PathName.SEARCH}${req.url}`);
-      logger.info(`End request with status code ${res.statusCode}`);
+      logger.debug(`${req.method} /${PathName.SEARCH}${req.url} --> res status code ${res.statusCode}`);
 
     } else {
       res.json(result);
-      logger.debug(`Client request to url /${PathName.SEARCH}${req.url}`);
-      logger.info(`End request with status code ${res.statusCode}`);
+      logger.debug(`${req.method} /${PathName.SEARCH}${req.url} --> res status code ${res.statusCode}`);
     }
 
   } catch (error) {
-    logger.error(`No content, ${error}`);
+    logger.error(`Error occurs: ${error}`);
   }
 });
 
