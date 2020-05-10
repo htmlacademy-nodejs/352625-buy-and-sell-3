@@ -9,7 +9,8 @@
     "eslint": "eslint --ext .js src/",
     "start": "nodemon ./src/service/service.js --server",
     "start::debug": "LOG_LEVEL=debug nodemon ./src/service/service.js --server | ./node_modules/.bin/pino-pretty",
-    "start-front-server": "nodemon ./src/express/index.js"
+    "start-front-server": "nodemon ./src/express/index.js",
+    "start-front-server::debug": "LOG_LEVEL=debug nodemon ./src/express/index.js | ./node_modules/.bin/pino-pretty"
   },
   "repository": {
     "type": "git",
@@ -33,8 +34,11 @@
     "chalk": "3.0.0",
     "express": "4.17.1",
     "express-pino-logger": "4.0.0",
+    "moment": "2.24.0",
     "nanoid": "2.1.11",
     "pino": "6.1.1",
-    "pug": "2.0.4"
+    "pug": "2.0.4",
+    "request": "2.88.2",
+    "request-promise-native": "1.0.8"
   }
 }

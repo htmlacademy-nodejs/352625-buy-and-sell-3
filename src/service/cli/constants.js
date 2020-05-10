@@ -6,9 +6,14 @@ const MAX_COUNT = 1000;
 
 const FILE_NAME = `mocks.json`;
 
-const OfferType = {
+const OffersList = {
   OFFER: `offer`,
   SALE: `sale`,
+};
+
+const OfferType = {
+  [OffersList.OFFER]: `Куплю`,
+  [OffersList.SALE]: `Продам`,
 };
 
 const SumRestrict = {
@@ -42,12 +47,19 @@ const ExitCode = {
   FAILURE: 1
 };
 
+const Time = {
+  MIN: -(1000 * 60 * 60 * 24 * 30 * 3), // 3 months in milliseconds
+  MAX: 0,
+};
+
 const FILE_SENTENCES_PATH = `./src/data/sentences.txt`;
 const FILE_CATEGORIES_PATH = `./src/data/categories.txt`;
 const FILE_TITLES_PATH = `./src/data/titles.txt`;
 const FILE_COMMENTS_PATH = `./src/data/comments.txt`;
+const FILE_USERS_PATH = `./src/data/users.txt`;
 
-const DEFAULT_PORT = 8080;
+const DEFAULT_API_PORT = 3000;
+const URL_API = `http://localhost:${DEFAULT_API_PORT}`;
 
 const HttpCode = {
   OK: 200,
@@ -62,7 +74,11 @@ const Id = {
   Length: {
     OFFER: 6,
     COMMENT: 4,
+    CATEGORY: 4,
   },
+};
+
+const Comment = {
   Restrict: {
     MIN: 0,
     MAX: 10,
@@ -70,7 +86,14 @@ const Id = {
   Phrases: {
     MIN: 2,
     MAX: 5,
-  }
+  },
+};
+
+const Category = {
+  Restrict: {
+    MIN: 2,
+    MAX: 3,
+  },
 };
 
 module.exports = {
@@ -83,12 +106,17 @@ module.exports = {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
   ExitCode,
+  Time,
   CommandsNames,
   FILE_SENTENCES_PATH,
   FILE_CATEGORIES_PATH,
   FILE_TITLES_PATH,
   FILE_COMMENTS_PATH,
-  DEFAULT_PORT,
+  FILE_USERS_PATH,
+  DEFAULT_API_PORT,
+  URL_API,
   HttpCode,
   Id,
+  Comment,
+  Category,
 };
