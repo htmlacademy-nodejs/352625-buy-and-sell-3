@@ -23,16 +23,15 @@ categoriesRouter.get(`/`, async (req, res) => {
 
     if (result === [Empty.DATA]) {
       res.json(Empty.CATEGORIES);
-      logger.debug(`${req.method} /${PathName.CATEGORIES}${req.url} --> res status code ${res.statusCode}`);
-
     } else {
       res.json(result);
-      logger.debug(`${req.method} /${PathName.CATEGORIES}${req.url} --> res status code ${res.statusCode}`);
     }
 
   } catch (error) {
+    res.status(500).json(Empty.OFFERS);
     logger.error(`Error occurs: ${error}`);
   }
+  logger.debug(`${req.method} /${PathName.CATEGORIES}${req.url} --> res status code ${res.statusCode}`);
 });
 
 module.exports = categoriesRouter;

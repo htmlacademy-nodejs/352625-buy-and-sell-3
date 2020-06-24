@@ -18,12 +18,10 @@ searchRouter.get(`/`, async (req, res) => {
 
     if (result.length === 0 || req.query.query === Empty.DATA) {
       res.json(Empty.SEARCH);
-      logger.debug(`${req.method} /${PathName.SEARCH}${req.url} --> res status code ${res.statusCode}`);
-
     } else {
       res.json(result);
-      logger.debug(`${req.method} /${PathName.SEARCH}${req.url} --> res status code ${res.statusCode}`);
     }
+    logger.debug(`${req.method} /${PathName.SEARCH}${req.url} --> res status code ${res.statusCode}`);
 
   } catch (error) {
     logger.error(`Error occurs: ${error}`);
