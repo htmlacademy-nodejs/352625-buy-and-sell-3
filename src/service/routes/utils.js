@@ -1,18 +1,13 @@
 'use strict';
 
-const fs = require(`fs`);
-const {promisify} = require(`util`);
-const readFile = promisify(fs.readFile);
-
-const {FILE_NAME} = require(`./../cli/constants.js`);
+const getMock = require(`./../mocks-data.js`);
 
 const getAuth = async (authStatus) => {
   let user = {};
   let userOffers = [];
 
   if (authStatus) {
-    const fileContent = await readFile(FILE_NAME);
-    const offers = JSON.parse(fileContent);
+    const offers = await getMock();
 
     user = offers[0].author;
     userOffers = offers.filter((item) => item.author.id === user.id);

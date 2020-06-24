@@ -3,10 +3,8 @@
 const express = require(`express`);
 const {Router} = require(`express`);
 
-const fs = require(`fs`);
-const {promisify} = require(`util`);
-const {FILE_NAME} = require(`./../cli/constants.js`);
 const {Empty, PathName} = require(`./../routes/constants.js`);
+const getMock = require(`./../mocks-data.js`);
 const {getLogger} = require(`./../logger.js`);
 
 const logger = getLogger();
@@ -14,8 +12,6 @@ const logger = getLogger();
 const offersRouter = new Router();
 
 offersRouter.use(express.json());
-
-const readFile = promisify(fs.readFile);
 
 const validateOffer = () => {
   // validating code is coming soon...
@@ -29,8 +25,7 @@ const validateComment = () => {
 
 offersRouter.get(`/`, async (req, res) => {
   try {
-    const fileContent = await readFile(FILE_NAME);
-    const result = JSON.parse(fileContent);
+    const result = await getMock();
 
     if (!result) {
       res.status(400).json(Empty.OFFERS);
@@ -48,8 +43,8 @@ offersRouter.get(`/`, async (req, res) => {
 
 offersRouter.get(`/:id`, async (req, res) => {
   try {
-    const fileContent = await readFile(FILE_NAME);
-    const result = JSON.parse(fileContent)
+    const data = await getMock();
+    const result = data
       .filter((elem) => elem.id === req.params.id)[0];
 
     if (!result) {
@@ -69,8 +64,8 @@ offersRouter.get(`/:id`, async (req, res) => {
 
 offersRouter.get(`/:id/comments`, async (req, res) => {
   try {
-    const fileContent = await readFile(FILE_NAME);
-    const targetOffer = JSON.parse(fileContent)
+    const data = await getMock();
+    const targetOffer = data
       .filter((elem) => elem.id === req.params.id)[0];
 
     if (!targetOffer) {
@@ -88,7 +83,7 @@ offersRouter.get(`/:id/comments`, async (req, res) => {
   }
 });
 
-offersRouter.post(`/`, async (req, res) => {
+offersRouter.post(`/`, (req, res) => {
   try {
     if (!validateOffer()) {
       res.status(400).send(`Incorrect offer format`);
@@ -110,8 +105,8 @@ offersRouter.post(`/`, async (req, res) => {
 
 offersRouter.put(`/:id`, async (req, res) => {
   try {
-    const fileContent = await readFile(FILE_NAME);
-    const result = JSON.parse(fileContent)
+    const data = await getMock();
+    const result = data
       .filter((elem) => elem.id === req.params.id)[0];
 
     if (!result) {
@@ -131,8 +126,8 @@ offersRouter.put(`/:id`, async (req, res) => {
 
 offersRouter.delete(`/:id`, async (req, res) => {
   try {
-    const fileContent = await readFile(FILE_NAME);
-    const result = JSON.parse(fileContent)
+    const data = await getMock();
+    const result = data
       .filter((elem) => elem.id === req.params.id)[0];
 
     if (!result) {
@@ -152,8 +147,8 @@ offersRouter.delete(`/:id`, async (req, res) => {
 
 offersRouter.delete(`/:offerId/comments/:commentId`, async (req, res) => {
   try {
-    const fileContent = await readFile(FILE_NAME);
-    const targetOffer = JSON.parse(fileContent)
+    const data = await getMock();
+    const targetOffer = data
       .filter((elem) => elem.id === req.params.offerId)[0];
 
     if (!targetOffer) {
@@ -182,8 +177,8 @@ offersRouter.delete(`/:offerId/comments/:commentId`, async (req, res) => {
 
 offersRouter.put(`/:offerId/comments`, async (req, res) => {
   try {
-    const fileContent = await readFile(FILE_NAME);
-    const result = JSON.parse(fileContent)
+    const data = await getMock();
+    const result = data
       .filter((elem) => elem.id === req.params.offerId)[0];
 
     if (!validateComment() || !result) {
