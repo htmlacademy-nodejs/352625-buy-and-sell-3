@@ -40,8 +40,8 @@ app.use(`/${PathName.OFFERS}`, offersRouter);
 app.use(`/${PathName.MY}`, myRouter);
 app.use(`/${PathName.ERROR}`, errorRouter);
 
-app.use((req, res, next) => {
-  res.status(404).render('errors/404.pug');
+app.use((req, res) => {
+  res.status(404).render(`errors/404.pug`);
 });
 
 app.use(expressPino);

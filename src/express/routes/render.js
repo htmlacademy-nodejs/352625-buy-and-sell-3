@@ -1,6 +1,6 @@
 'use strict';
 
-const request = require(`request-promise-native`);
+const axios = require(`axios`).default;
 
 const {
   getOffersByCategory,
@@ -22,9 +22,9 @@ const render404Page = (req, res) => {
 
 const renderHomePage = async (req, res, urlAuth, urlOffers, urlCategories) => {
   try {
-    const offers = await request(urlOffers, {json: true});
-    const categories = await request(urlCategories, {json: true});
-    const auth = await request(urlAuth, {json: true});
+    const offers = (await axios.get(urlOffers)).data;
+    const categories = (await axios.get(urlCategories)).data;
+    const auth = (await axios.get(urlAuth)).data;
 
     res.render(`main`, {
       auth,
@@ -44,9 +44,9 @@ const renderHomePage = async (req, res, urlAuth, urlOffers, urlCategories) => {
 const renderCategoryPage = async (req, res, urlAuth, urlOffers, urlCategories) => {
   try {
     const activeCategoryId = req.params.categoryId;
-    const offers = await request(urlOffers, {json: true});
-    const categories = await request(urlCategories, {json: true});
-    const auth = await request(urlAuth, {json: true});
+    const offers = (await axios.get(urlOffers)).data;
+    const categories = (await axios.get(urlCategories)).data;
+    const auth = (await axios.get(urlAuth)).data;
 
     if (!categories.find((item) => item.id === activeCategoryId)) {
       render404Page(req, res);
@@ -70,8 +70,8 @@ const renderCategoryPage = async (req, res, urlAuth, urlOffers, urlCategories) =
 
 const renderTicketPage = async (req, res, urlAuth, urlOffers) => {
   try {
-    const auth = await request(urlAuth, {json: true});
-    const offer = await request(encodeURI(`${urlOffers}${req.url}`), {json: true});
+    const auth = (await axios.get(urlAuth)).data;
+    const offer = (await axios.get(encodeURI(`${urlOffers}${req.url}`))).data;
 
     res.render(`ticket`, {
       auth,
@@ -87,9 +87,9 @@ const renderTicketPage = async (req, res, urlAuth, urlOffers) => {
 
 const renderTicketEditPage = async (req, res, urlAuth, urlOffers, urlCategories) => {
   try {
-    const categories = await request(urlCategories, {json: true});
-    const offer = await request(encodeURI(`${urlOffers}/${req.params.offerId}`), {json: true});
-    const auth = await request(urlAuth, {json: true});
+    const categories = (await axios.get(urlCategories)).data;
+    const offer = (await axios.get(encodeURI(`${urlOffers}/${req.params.offerId}`))).data;
+    const auth = (await axios.get(urlAuth)).data;
 
     res.render(`ticket-edit`, {
       auth,
@@ -106,7 +106,7 @@ const renderTicketEditPage = async (req, res, urlAuth, urlOffers, urlCategories)
 
 const renderMyTicketsPage = async (req, res, urlAuth, reqUrl) => {
   try {
-    const auth = await request(urlAuth, {json: true});
+    const auth = (await axios.get(urlAuth)).data;
 
     res.render(`my-tickets`, {
       reqUrl,
@@ -121,7 +121,7 @@ const renderMyTicketsPage = async (req, res, urlAuth, reqUrl) => {
 
 const renderCommentsPage = async (req, res, urlAuth, reqUrl) => {
   try {
-    const auth = await request(urlAuth, {json: true});
+    const auth = (await axios.get(urlAuth)).data;
     const quantity = auth.userOffers.length < 3
       ? auth.userOffers.length
       : 3;
@@ -141,8 +141,8 @@ const renderCommentsPage = async (req, res, urlAuth, reqUrl) => {
 
 const renderNewTicketPage = async (req, res, urlAuth, urlCategories) => {
   try {
-    const auth = await request(urlAuth, {json: true});
-    const categories = await request(urlCategories, {json: true});
+    const auth = (await axios.get(urlAuth)).data;
+    const categories = (await axios.get(urlCategories)).data;
 
     res.render(`new-ticket`, {
       auth,
@@ -157,9 +157,9 @@ const renderNewTicketPage = async (req, res, urlAuth, urlCategories) => {
 
 const renderSearchResultsPage = async (req, res, urlAuth, urlSearch, urlOffers) => {
   try {
-    const auth = await request(urlAuth, {json: true});
-    const offers = await request(urlOffers, {json: true});
-    const result = await request(encodeURI(`${urlSearch}${req.query.search}`), {json: true});
+    const auth = (await axios.get(urlAuth)).data;
+    const offers = (await axios.get(urlOffers)).data;
+    const result = (await axios.get(encodeURI(`${urlSearch}${req.query.search}`))).data;
 
     res.render(`search-result`, {
       auth,
@@ -175,7 +175,7 @@ const renderSearchResultsPage = async (req, res, urlAuth, urlSearch, urlOffers) 
 
 const postFormDataToService = (req, res, urlOffers) => {
   try {
-    request.post(urlOffers, {json: req.body});
+    axios.post(urlOffers, {json: req.body});
 
     res.redirect(`/my`);
     logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);

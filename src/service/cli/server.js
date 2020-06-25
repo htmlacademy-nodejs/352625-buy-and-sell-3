@@ -34,7 +34,7 @@ app.use(express.urlencoded({extended: false}));
 
 app.set(`json spaces`, 2);
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).send(`Page not exists`);
 });
 
