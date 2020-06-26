@@ -14,12 +14,10 @@ categoriesRouter.get(`/`, async (req, res) => {
   try {
     const data = await getMock();
 
-    const result = Array
-      .from(new Set(data
-        .map((elem) => elem.category || Empty.DATA)
-        .flat()
-        .map((item) => JSON.stringify(item))))
-      .map((item) => JSON.parse(item));
+    const result = [...(new Set(data
+      .map((elem) => elem.category || Empty.DATA).flat()
+      .map((category) => JSON.stringify(category))
+    ))].map((text) => JSON.parse(text));
 
     if (result === [Empty.DATA]) {
       res.json(Empty.CATEGORIES);
