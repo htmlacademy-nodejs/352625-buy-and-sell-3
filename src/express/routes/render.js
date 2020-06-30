@@ -1,7 +1,5 @@
 'use strict';
 
-const axios = require(`axios`).default;
-
 const {
   getOffersByCategory,
   getCategoryById,
@@ -10,6 +8,15 @@ const {
 } = require(`./utils.js`);
 
 const {PathName} = require(`./constants.js`);
+
+const {
+  getOffers,
+  getOffer,
+  postOffer,
+  getSearch,
+  getCategories,
+  getAuth
+} = require(`./axios.js`);
 
 const {getLogger} = require(`./../../service/logger.js`);
 
@@ -20,11 +27,11 @@ const render404Page = (req, res) => {
   logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 };
 
-const renderHomePage = async (req, res, urlAuth, urlOffers, urlCategories) => {
+const renderHomePage = async (req, res) => {
   try {
-    const offers = (await axios.get(urlOffers)).data;
-    const categories = (await axios.get(urlCategories)).data;
-    const auth = (await axios.get(urlAuth)).data;
+    const offers = await getOffers();
+    const categories = await getCategories();
+    const auth = await getAuth();
 
     res.render(`main`, {
       auth,
@@ -41,12 +48,12 @@ const renderHomePage = async (req, res, urlAuth, urlOffers, urlCategories) => {
   }
 };
 
-const renderCategoryPage = async (req, res, urlAuth, urlOffers, urlCategories) => {
+const renderCategoryPage = async (req, res) => {
   try {
     const activeCategoryId = req.params.categoryId;
-    const offers = (await axios.get(urlOffers)).data;
-    const categories = (await axios.get(urlCategories)).data;
-    const auth = (await axios.get(urlAuth)).data;
+    const offers = await getOffers();
+    const categories = await getCategories();
+    const auth = await getAuth();
 
     if (!categories.find((item) => item.id === activeCategoryId)) {
       render404Page(req, res);
@@ -68,10 +75,10 @@ const renderCategoryPage = async (req, res, urlAuth, urlOffers, urlCategories) =
   }
 };
 
-const renderTicketPage = async (req, res, urlAuth, urlOffers) => {
+const renderTicketPage = async (req, res) => {
   try {
-    const auth = (await axios.get(urlAuth)).data;
-    const offer = (await axios.get(encodeURI(`${urlOffers}${req.url}`))).data;
+    const auth = await getAuth();
+    const offer = await getOffer(req.params.offerId);
 
     res.render(`ticket`, {
       auth,
@@ -85,11 +92,11 @@ const renderTicketPage = async (req, res, urlAuth, urlOffers) => {
   }
 };
 
-const renderTicketEditPage = async (req, res, urlAuth, urlOffers, urlCategories) => {
+const renderTicketEditPage = async (req, res) => {
   try {
-    const categories = (await axios.get(urlCategories)).data;
-    const offer = (await axios.get(encodeURI(`${urlOffers}/${req.params.offerId}`))).data;
-    const auth = (await axios.get(urlAuth)).data;
+    const categories = await getCategories();
+    const offer = await getOffer(req.params.offerId);
+    const auth = await getAuth();
 
     res.render(`ticket-edit`, {
       auth,
@@ -104,12 +111,12 @@ const renderTicketEditPage = async (req, res, urlAuth, urlOffers, urlCategories)
   }
 };
 
-const renderMyTicketsPage = async (req, res, urlAuth, reqUrl) => {
+const renderMyTicketsPage = async (req, res) => {
   try {
-    const auth = (await axios.get(urlAuth)).data;
+    const auth = await getAuth();
 
     res.render(`my-tickets`, {
-      reqUrl,
+      reqUrl: req.originalUrl,
       auth,
     });
     logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
@@ -119,16 +126,16 @@ const renderMyTicketsPage = async (req, res, urlAuth, reqUrl) => {
   }
 };
 
-const renderCommentsPage = async (req, res, urlAuth, reqUrl) => {
+const renderCommentsPage = async (req, res) => {
   try {
-    const auth = (await axios.get(urlAuth)).data;
+    const auth = await getAuth();
     const quantity = auth.userOffers.length < 3
       ? auth.userOffers.length
       : 3;
     const offersForRender = auth.userOffers.slice(0, quantity);
 
     res.render(`comments`, {
-      reqUrl,
+      reqUrl: req.originalUrl,
       auth,
       offersForRender,
     });
@@ -139,10 +146,10 @@ const renderCommentsPage = async (req, res, urlAuth, reqUrl) => {
   }
 };
 
-const renderNewTicketPage = async (req, res, urlAuth, urlCategories) => {
+const renderNewTicketPage = async (req, res) => {
   try {
-    const auth = (await axios.get(urlAuth)).data;
-    const categories = (await axios.get(urlCategories)).data;
+    const auth = await getAuth();
+    const categories = await getCategories();
 
     res.render(`new-ticket`, {
       auth,
@@ -155,11 +162,11 @@ const renderNewTicketPage = async (req, res, urlAuth, urlCategories) => {
   }
 };
 
-const renderSearchResultsPage = async (req, res, urlAuth, urlSearch, urlOffers) => {
+const renderSearchResultsPage = async (req, res) => {
   try {
-    const auth = (await axios.get(urlAuth)).data;
-    const offers = (await axios.get(urlOffers)).data;
-    const result = (await axios.get(encodeURI(`${urlSearch}${req.query.search}`))).data;
+    const auth = await getAuth();
+    const offers = await getOffers();
+    const result = await getSearch(req.query.search);
 
     res.render(`search-result`, {
       auth,
@@ -173,9 +180,9 @@ const renderSearchResultsPage = async (req, res, urlAuth, urlSearch, urlOffers) 
   }
 };
 
-const postFormDataToService = (req, res, urlOffers) => {
+const postFormDataToService = (req, res) => {
   try {
-    axios.post(urlOffers, {json: req.body});
+    postOffer(req.body);
 
     res.redirect(`/my`);
     logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);

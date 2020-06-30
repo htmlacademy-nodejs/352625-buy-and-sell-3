@@ -9,13 +9,7 @@ const searchRouter = new Router();
 
 searchRouter.get(
     `/`,
-    (req, res) => renderSearchResultsPage(
-        req,
-        res,
-        UriApi.AUTH,
-        UriApi.SEARCH,
-        UriApi.OFFERS
-    )
+    (req, res) => renderSearchResultsPage(req, res)
 );
 
 module.exports = searchRouter;
