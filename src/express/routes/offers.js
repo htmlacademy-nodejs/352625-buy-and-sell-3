@@ -2,7 +2,6 @@
 
 const {Router} = require(`express`);
 
-const {UriApi} = require(`./utils.js`);
 const {
   renderCategoryPage,
   renderTicketPage,

@@ -53,8 +53,8 @@ module.exports = {
       await getMock();
 
       app.listen(
-        port,
-        () => logger.info(`Server starts on ${port}`))
+          port,
+          () => logger.info(`Server starts on ${port}`))
         .on(`error`, (err) => {
           logger.error(`Server can't start. Error: ${err}`);
         });
