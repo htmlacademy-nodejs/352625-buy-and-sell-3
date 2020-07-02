@@ -5,7 +5,7 @@ const {
   getCategoryById,
   getFreshItems,
   getMostDiscussedItems,
-} = require(`./utils.js`);
+} = require(`./../utils.js`);
 
 const {PathName} = require(`./constants.js`);
 
@@ -16,7 +16,7 @@ const {
   getSearch,
   getCategories,
   getAuth
-} = require(`./axios.js`);
+} = require(`./../axios.js`);
 
 const {getLogger} = require(`./../../service/logger.js`);
 
