@@ -3,7 +3,7 @@
 const express = require(`express`);
 const path = require(`path`);
 
-const pino = require(`pino`)(`./logs/express.log`);
+const pino = require(`pino`)(`./src/express/logs/express.log`);
 const expressPino = require(`express-pino-logger`)({
   logger: pino
 });
@@ -39,6 +39,10 @@ app.use(`/${PathName.SEARCH}`, searchRouter);
 app.use(`/${PathName.OFFERS}`, offersRouter);
 app.use(`/${PathName.MY}`, myRouter);
 app.use(`/${PathName.ERROR}`, errorRouter);
+
+app.use((req, res) => {
+  res.status(404).render(`errors/404.pug`);
+});
 
 app.use(expressPino);
 

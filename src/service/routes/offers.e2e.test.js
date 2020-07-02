@@ -11,12 +11,12 @@ const {FILE_NAME, HttpCode} = require(`./../cli/constants.js`);
 const readFile = promisify(fs.readFile);
 
 const Offer = {
-  RIGHT_ID: encodeURI(`hcpeeb`),
+  RIGHT_ID: encodeURI(`HNpAbj`),
   WRONG_ID: encodeURI(`ылдвапр`),
 };
 
 const Comment = {
-  RIGHT_ID: encodeURI(`xI0B`),
+  RIGHT_ID: encodeURI(`xbqJ`),
   WRONG_ID: encodeURI(`фжыдвл`),
 };
 
@@ -77,9 +77,9 @@ describe(`When GET '/${PathName.OFFERS}/${Offer.RIGHT_ID}/comments'`, () => {
 });
 
 describe(`When GET '/${PathName.OFFERS}/${Offer.WRONG_ID}/comments'`, () => {
-  test(`status code should be ${HttpCode.BAD_REQUEST}`, async () => {
+  test(`status code should be ${HttpCode.NOT_FOUND}`, async () => {
     const res = await request(app).get(`/${PathName.OFFERS}/${Offer.WRONG_ID}/comments`);
-    expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
+    expect(res.statusCode).toBe(HttpCode.NOT_FOUND);
   });
 
   test(`response should be be equal to '${Empty.COMMENTS}'`, async () => {

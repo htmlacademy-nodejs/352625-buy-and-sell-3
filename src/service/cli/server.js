@@ -2,7 +2,7 @@
 
 const express = require(`express`);
 
-const pino = require(`pino`)(`./logs/service.log`);
+const pino = require(`pino`)(`./src/service/logs/service.log`);
 const expressPino = require(`express-pino-logger`)({
   logger: pino
 });
@@ -22,6 +22,8 @@ const {getLogger} = require(`./../logger.js`);
 
 const logger = getLogger();
 
+const getMock = require(`./../mocks-data.js`);
+
 const app = express();
 
 app.use(`/${PathName.OFFERS}`, offersRouter);
@@ -34,20 +36,31 @@ app.use(express.urlencoded({extended: false}));
 
 app.set(`json spaces`, 2);
 
+app.use((req, res) => {
+  res.status(404).send(`Page not exists`);
+});
+
 app.use(expressPino);
 
 module.exports = {
   app,
   name: CommandsNames.SERVER,
-  run(args) {
+  async run(args) {
     const [customPort] = args;
     const port = Number.parseInt(customPort, 10) || DEFAULT_API_PORT;
 
-    app.listen(
-        port,
-        () => logger.info(`Server starts on ${port}`))
-      .on(`error`, (err) => {
-        logger.error(`Server can't start. Error: ${err}`);
-      });
+    try {
+      await getMock();
+
+      app.listen(
+          port,
+          () => logger.info(`Server starts on ${port}`))
+        .on(`error`, (err) => {
+          logger.error(`Server can't start. Error: ${err}`);
+        });
+
+    } catch (err) {
+      logger.error(`Cannot read mock file. Error: ${err}`);
+    }
   }
 };
