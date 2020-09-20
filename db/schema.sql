@@ -25,7 +25,7 @@ CREATE TABLE authors
   id SERIAL PRIMARY KEY,
   firstname VARCHAR(50) NOT NULL,
   lastname VARCHAR(50) NOT NULL,
-  email VARCHAR(50) NOT NULL,
+  email VARCHAR(50) NOT NULL UNIQUE,
   password VARCHAR(50) NOT NULL,
   picture_id INTEGER NOT NULL,
   FOREIGN KEY (picture_id) REFERENCES pictures (id)
@@ -59,8 +59,8 @@ CREATE TABLE offers
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   created_date DATE NOT NULL,
-  title VARCHAR(50) NOT NULL,
-  description VARCHAR(500) NOT NULL,
+  title VARCHAR(100) NOT NULL,
+  description VARCHAR(1000) NOT NULL,
   sum MONEY NOT NULL
 );
 
@@ -89,5 +89,5 @@ CREATE TABLE comments
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   created_date DATE NOT NULL,
-  text VARCHAR(100) NOT NULL
+  text VARCHAR(1000) NOT NULL
 );
