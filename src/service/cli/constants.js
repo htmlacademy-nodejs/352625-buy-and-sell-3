@@ -6,6 +6,8 @@ const MAX_COUNT = 1000;
 
 const FILE_NAME = `mocks.json`;
 
+const FILE_NAME_FILL = `fill-db.sql`;
+
 const OffersList = {
   OFFER: `offer`,
   SALE: `sale`,
@@ -36,6 +38,7 @@ const CommandsNames = {
   GENERATE: `--generate`,
   HELP: `--help`,
   SERVER: `--server`,
+  FILL: `--fill`,
 };
 
 const DEFAULT_COMMAND = CommandsNames.HELP;
@@ -57,6 +60,7 @@ const FILE_CATEGORIES_PATH = `./src/data/categories.txt`;
 const FILE_TITLES_PATH = `./src/data/titles.txt`;
 const FILE_COMMENTS_PATH = `./src/data/comments.txt`;
 const FILE_USERS_PATH = `./src/data/users.txt`;
+const DB_PATH = `./db/`;
 
 const DEFAULT_API_PORT = 3000;
 const URL_API = `http://localhost:${DEFAULT_API_PORT}`;
@@ -100,6 +104,7 @@ module.exports = {
   DEFAULT_COUNT,
   MAX_COUNT,
   FILE_NAME,
+  FILE_NAME_FILL,
   OfferType,
   SumRestrict,
   Picture,
@@ -113,6 +118,7 @@ module.exports = {
   FILE_TITLES_PATH,
   FILE_COMMENTS_PATH,
   FILE_USERS_PATH,
+  DB_PATH,
   DEFAULT_API_PORT,
   URL_API,
   HttpCode,

@@ -15,6 +15,7 @@ const message = `
     ${CommandsNames.HELP}                печатает этот текст
     ${CommandsNames.GENERATE} <count>    формирует файл mocks.json
     ${CommandsNames.SERVER} <port>       запускает dev-сервер
+    ${CommandsNames.FILL} <count>        формирует файл fill-db.sql с моковыми данными
     `;
 
 module.exports = {
