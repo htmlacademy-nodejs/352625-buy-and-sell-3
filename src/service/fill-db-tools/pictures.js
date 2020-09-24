@@ -2,10 +2,11 @@
 
 const {Pictures} = require(`./constants.js`);
 
-const insertPictures = (values, typeName, result, count) => {
+const insertPictures = (values, typeName, count) => {
+  const result = [];
   let i = count;
 
-  values.map((value, index) => {
+  values.forEach((value, index) => {
     const id = index + 1;
     const type = typeName;
     const normal = id < 10 ? `${type}0${id}.jpg` : `${type}${id}.jpg`;
@@ -17,23 +18,25 @@ const insertPictures = (values, typeName, result, count) => {
       ` '${normal}'`,
       ` '${double}'`,
     ]);
+
     i++;
   });
+
+  return result;
 };
 
 const getPictures = (count, categories, users) => {
-  const pictures = [];
   const items = Array(count).fill(``);
 
-  const firstOffersId = 1;
-  const firstCategoriesId = count + 1;
-  const firstUsersId = firstCategoriesId + categories.length;
+  const firstItemCount = 1;
+  const firstCategoryCount = count + 1;
+  const firstUserCount = firstCategoryCount + categories.length;
 
-  insertPictures(items, Pictures.ITEM, pictures, firstOffersId);
-  insertPictures(categories, Pictures.CATEGORY, pictures, firstCategoriesId);
-  insertPictures(users, Pictures.AVATAR, pictures, firstUsersId);
+  const itemsValues = insertPictures(items, Pictures.ITEM, firstItemCount);
+  const categoriesValues = insertPictures(categories, Pictures.CATEGORY, firstCategoryCount);
+  const usersValues = insertPictures(users, Pictures.AVATAR, firstUserCount);
 
-  return pictures;
+  return itemsValues.concat(categoriesValues, usersValues);
 };
 
 module.exports = getPictures;
