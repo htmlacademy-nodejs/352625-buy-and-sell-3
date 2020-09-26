@@ -10,7 +10,8 @@
     "start": "nodemon ./src/service/service.js --server",
     "start::debug": "LOG_LEVEL=debug nodemon ./src/service/service.js --server | ./node_modules/.bin/pino-pretty",
     "start-front-server": "nodemon ./src/express/index.js",
-    "start-front-server::debug": "LOG_LEVEL=debug nodemon ./src/express/index.js | ./node_modules/.bin/pino-pretty"
+    "start-front-server::debug": "LOG_LEVEL=debug nodemon ./src/express/index.js | ./node_modules/.bin/pino-pretty",
+    "db-connect": "node ./src/service/service.js --db-connect | ./node_modules/.bin/pino-pretty"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,7 @@
     "express-pino-logger": "4.0.0",
     "moment": "2.24.0",
     "nanoid": "2.1.11",
+    "pg": "8.3.3",
     "pino": "6.1.1",
     "pug": "2.0.4"
   }
