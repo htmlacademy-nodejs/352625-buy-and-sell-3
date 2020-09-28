@@ -28,8 +28,8 @@ const insertPictures = (values, typeName, count) => {
 const getPictures = (count, categories, users) => {
   const items = Array(count).fill(``);
 
-  const firstItemCount = 1;
-  const firstCategoryCount = count + 1;
+  const firstItemCount = Pictures.FIRST_ID;
+  const firstCategoryCount = count + firstItemCount;
   const firstUserCount = firstCategoryCount + categories.length;
 
   const itemsValues = insertPictures(items, Pictures.ITEM, firstItemCount);

@@ -24,6 +24,7 @@ const Pictures = {
   AVATAR: `avatar`,
   CATEGORY: `cat`,
   ITEM: `item`,
+  FIRST_ID: 1,
 };
 
 const PASSWORD_LENGTH = 8;

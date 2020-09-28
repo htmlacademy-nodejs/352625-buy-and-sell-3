@@ -33,8 +33,7 @@ FROM
   categories
     iNNER JOIN offers_categories ON categories.id = offers_categories.category_id
 GROUP BY
-  categories.id,
-  categories.name
+  categories.id
 ORDER BY (categories.id);
 
 --------------------------------
@@ -72,15 +71,14 @@ FROM
     INNER JOIN
       (
         SELECT
-          offers.id AS "offer_id",
+          offers_categories.offer_id AS "offer_id",
           STRING_AGG(categories.name, ', ') AS "list"
         FROM offers_categories
-          LEFT JOIN offers ON offers.id = offers_categories.offer_id
           LEFT JOIN categories ON categories.id = offers_categories.category_id
         GROUP BY
-          offers.id
+          offers_categories.offer_id
       ) categories ON offers.id = categories.offer_id
-ORDER BY offers.id;
+ORDER BY offers.created_date DESC;
 
 --------------------------------
 -- 5. Получить полную информацию определённого объявления
@@ -116,13 +114,12 @@ FROM
     INNER JOIN
   (
     SELECT
-      offers.id AS "offer_id",
+      offers_categories.offer_id AS "offer_id",
       STRING_AGG(categories.name, ', ') AS "list"
     FROM offers_categories
-      LEFT JOIN offers ON offers.id = offers_categories.offer_id
       LEFT JOIN categories ON categories.id = offers_categories.category_id
     GROUP BY
-      offers.id
+      offers_categories.offer_id
   ) categories ON offers.id = categories.offer_id
 WHERE offers.id = 1;
 

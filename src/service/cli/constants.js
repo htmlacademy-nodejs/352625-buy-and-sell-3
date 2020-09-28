@@ -39,6 +39,7 @@ const CommandsNames = {
   HELP: `--help`,
   SERVER: `--server`,
   FILL: `--fill`,
+  DB_CONNECT: `--db-connect`,
 };
 
 const DEFAULT_COMMAND = CommandsNames.HELP;
