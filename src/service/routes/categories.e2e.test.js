@@ -10,7 +10,7 @@ const {promisify} = require(`util`);
 
 const readFile = promisify(fs.readFile);
 
-describe(`When GET '/${PathName.CATEGORIES}'`, () => {
+describe.skip(`When GET '/${PathName.CATEGORIES}'`, () => {
   test(`status code should be ${HttpCode.OK}`, async () => {
     const res = await request(app).get(`/${PathName.CATEGORIES}`);
     expect(res.statusCode).toBe(HttpCode.OK);

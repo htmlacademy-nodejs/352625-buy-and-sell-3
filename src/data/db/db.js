@@ -36,10 +36,6 @@ Author.hasMany(Offer, {
   foreignKey: `author_id`,
 });
 
-Author.hasMany(Comment, {
-  foreignKey: `comment_id`,
-});
-
 Auth.belongsTo(Author, {
   foreignKey: `author_id`,
   as: `user`,

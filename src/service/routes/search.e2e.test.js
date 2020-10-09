@@ -16,7 +16,7 @@ const RIGHT_SEARCH_URI = encodeURI(RIGHT_SEARCH);
 const WRONG_SEARCH = `ылдвапрдлорвап`;
 const WRONG_SEARCH_URI = encodeURI(WRONG_SEARCH);
 
-describe(`When GET '/${PathName.SEARCH}'`, () => {
+describe.skip(`When GET '/${PathName.SEARCH}'`, () => {
   test(`status code should be ${HttpCode.OK}`, async () => {
     const res = await request(app).get(`/${PathName.SEARCH}`);
     expect(res.statusCode).toBe(HttpCode.OK);

@@ -3,7 +3,6 @@
 const {Router} = require(`express`);
 
 const {Empty, PathName} = require(`./../routes/constants.js`);
-const getMock = require(`./../mocks-data.js`);
 const {getLogger} = require(`./../logger.js`);
 
 const logger = getLogger();
@@ -12,14 +11,12 @@ const searchRouter = new Router();
 
 searchRouter.get(`/`, async (req, res) => {
   try {
-    const data = await getMock();
-    const result = data
-      .filter((elem) => elem.title.includes(req.query.query));
+    const data = [];
 
-    if (result.length === 0 || req.query.query === Empty.DATA) {
+    if (data.length === 0 || req.query.query === Empty.DATA) {
       res.json(Empty.SEARCH);
     } else {
-      res.json(result);
+      res.json(data);
     }
     logger.debug(`${req.method} /${PathName.SEARCH}${req.url} --> res status code ${res.statusCode}`);
 

@@ -4,7 +4,11 @@ const express = require(`express`);
 const {Router} = require(`express`);
 
 const {Empty, PathName} = require(`./../routes/constants.js`);
-const getMock = require(`./../mocks-data.js`);
+const {HttpCode} = require(`./../cli/constants.js`);
+const {getOffers} = require(`./utils/offers.js`);
+const {getOffer} = require(`./utils/offer.js`);
+const {getCommentsByOfferId} = require(`./utils/comments.js`);
+
 const {getLogger} = require(`./../logger.js`);
 
 const logger = getLogger();
@@ -14,58 +18,67 @@ const offersRouter = new Router();
 offersRouter.use(express.json());
 
 const validateOffer = () => {
-  // validating code is coming soon...
+  // TODO validating code is coming soon...
   return true;
 };
 
 const validateComment = () => {
-  // validating code is coming soon...
+  // TODO validating code is coming soon...
   return true;
 };
 
 offersRouter.get(`/`, async (req, res) => {
   try {
-    const result = await getMock();
+    const result = await getOffers();
     res.json(result);
 
   } catch (error) {
-    res.status(500).json(Empty.OFFERS);
+    res.status(HttpCode.INTERNAL_SERVER_ERROR).json(Empty.OFFERS);
     logger.error(`Error occurs: ${error}`);
   }
   logger.debug(`${req.method} /${PathName.OFFERS}${req.url} --> res status code ${res.statusCode}`);
 });
 
-offersRouter.get(`/:id`, async (req, res) => {
+offersRouter.get(`/:offerId`, async (req, res) => {
   try {
-    const data = await getMock();
-    const result = data
-      .filter((elem) => elem.id === req.params.id)[0];
+    let data = null;
+    const offerId = parseInt(req.params.offerId, 10);
 
-    if (!result) {
-      res.status(404).json(Empty.OFFER);
-    } else {
-      res.json(result);
+    if (offerId) {
+      data = await getOffer(offerId);
     }
+
+    if (data) {
+      res.json(data);
+
+    } else {
+      res.status(HttpCode.BAD_REQUEST).json(Empty.OFFER);
+    }
+    logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
   } catch (error) {
-    res.status(500).json(Empty.OFFER);
+    res.status(HttpCode.INTERNAL_SERVER_ERROR).json(Empty.OFFER);
     logger.error(`Error occurs: ${error}`);
   }
   logger.debug(`${req.method} /${PathName.OFFERS}${req.url} --> res status code ${res.statusCode}`);
 });
 
-offersRouter.get(`/:id/comments`, async (req, res) => {
+offersRouter.get(`/:offerId/comments`, async (req, res) => {
   try {
-    const data = await getMock();
-    const targetOffer = data
-      .filter((elem) => elem.id === req.params.id)[0];
+    let data = null;
+    const offerId = parseInt(req.params.offerId, 10);
 
-    if (!targetOffer) {
-      res.status(404).json(Empty.COMMENTS);
-    } else {
-      const result = targetOffer.comments;
-      res.json(result);
+    if (offerId) {
+      data = await getCommentsByOfferId(offerId);
     }
+
+    if (data) {
+      res.json(data);
+    } else {
+      res.status(HttpCode.BAD_REQUEST).json(Empty.COMMENTS);
+    }
+
+    logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
   } catch (error) {
     res.status(500).json(Empty.COMMENTS);
@@ -94,11 +107,9 @@ offersRouter.post(`/`, (req, res) => {
 
 offersRouter.put(`/:id`, async (req, res) => {
   try {
-    const data = await getMock();
-    const result = data
-      .filter((elem) => elem.id === req.params.id)[0];
+    const data = [];
 
-    if (!result) {
+    if (!data) {
       res.status(400).send(Empty.OFFER);
     } else {
       // some code for editing offer is coming soon...
@@ -113,11 +124,9 @@ offersRouter.put(`/:id`, async (req, res) => {
 
 offersRouter.delete(`/:id`, async (req, res) => {
   try {
-    const data = await getMock();
-    const result = data
-      .filter((elem) => elem.id === req.params.id)[0];
+    const data = [];
 
-    if (!result) {
+    if (!data) {
       res.status(400).send(`Invalid offer ID`);
     } else {
       // some code for deleting offer is coming soon...
@@ -130,39 +139,11 @@ offersRouter.delete(`/:id`, async (req, res) => {
   }
 });
 
-offersRouter.delete(`/:offerId/comments/:commentId`, async (req, res) => {
-  try {
-    const data = await getMock();
-    const targetOffer = data
-      .filter((elem) => elem.id === req.params.offerId)[0];
-
-    if (!targetOffer) {
-      res.status(400).send(`Invalid offer ID`);
-    } else {
-      const targetComment = targetOffer.comments
-        .filter((elem) => elem.id === req.params.commentId)[0];
-
-      if (!targetComment) {
-        res.status(400).send(`Invalid comment ID`);
-      } else {
-        // some code for deleting comment is coming soon...
-        res.send(`Comment is deleted`);
-      }
-    }
-    logger.debug(`${req.method} /${PathName.OFFERS}${req.url} --> res status code ${res.statusCode}`);
-
-  } catch (error) {
-    logger.error(`Error occurs: ${error}`);
-  }
-});
-
 offersRouter.put(`/:offerId/comments`, async (req, res) => {
   try {
-    const data = await getMock();
-    const result = data
-      .filter((elem) => elem.id === req.params.offerId)[0];
+    const data = [];
 
-    if (!validateComment() || !result) {
+    if (!validateComment() || !data) {
       res.status(400).send(Empty.COMMENT);
     } else {
       // some code for adding new comment is coming soon...
