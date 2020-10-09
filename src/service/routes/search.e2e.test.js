@@ -4,19 +4,17 @@ const request = require(`supertest`);
 
 const {app} = require(`./../cli/server.js`);
 const {PathName, Empty, SEARCH_PARAM} = require(`./../routes/constants.js`);
-const fs = require(`fs`);
-const {promisify} = require(`util`);
-const {FILE_NAME, HttpCode} = require(`./../cli/constants.js`);
+const {HttpCode} = require(`./../cli/constants.js`);
 
-const readFile = promisify(fs.readFile);
+const {getSearch} = require(`./utils/search.js`);
 
-const RIGHT_SEARCH = `кота`;
+const RIGHT_SEARCH = `ар`;
 const RIGHT_SEARCH_URI = encodeURI(RIGHT_SEARCH);
 
 const WRONG_SEARCH = `ылдвапрдлорвап`;
 const WRONG_SEARCH_URI = encodeURI(WRONG_SEARCH);
 
-describe.skip(`When GET '/${PathName.SEARCH}'`, () => {
+describe(`When GET '/${PathName.SEARCH}'`, () => {
   test(`status code should be ${HttpCode.OK}`, async () => {
     const res = await request(app).get(`/${PathName.SEARCH}`);
     expect(res.statusCode).toBe(HttpCode.OK);
@@ -25,12 +23,9 @@ describe.skip(`When GET '/${PathName.SEARCH}'`, () => {
   test(`request '${SEARCH_PARAM}${RIGHT_SEARCH_URI}' should return filtered offers by ${RIGHT_SEARCH} in title`, async () => {
     const res = await request(app)
       .get(`/${PathName.SEARCH}${SEARCH_PARAM}${RIGHT_SEARCH_URI}`);
-
-    const mockOffers = JSON.parse(await readFile(FILE_NAME));
-    const searchResult = mockOffers
-      .filter((elem) => elem.title.includes(RIGHT_SEARCH));
-
-    expect(res.body).toStrictEqual(searchResult);
+    const data = await getSearch(RIGHT_SEARCH);
+    const result = JSON.parse(JSON.stringify(data));
+    expect(res.body).toStrictEqual(result);
   });
 
   test(`blank search returns '${Empty.SEARCH}'`, async () => {

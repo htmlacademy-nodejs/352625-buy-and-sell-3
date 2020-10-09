@@ -19,8 +19,11 @@ const Empty = {
 
 const SEARCH_PARAM = `?query=`;
 
+const SEARCH_LIMIT = 10;
+
 module.exports = {
   PathName,
   Empty,
   SEARCH_PARAM,
+  SEARCH_LIMIT,
 };

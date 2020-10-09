@@ -2,7 +2,8 @@
 
 const {Router} = require(`express`);
 
-const {Empty, PathName} = require(`./../routes/constants.js`);
+const {PathName} = require(`./../routes/constants.js`);
+const {getSearch} = require(`./utils/search.js`);
 const {getLogger} = require(`./../logger.js`);
 
 const logger = getLogger();
@@ -11,13 +12,14 @@ const searchRouter = new Router();
 
 searchRouter.get(`/`, async (req, res) => {
   try {
-    const data = [];
+    const typingData = req.query.query;
+    let data = await getSearch(typingData);
 
-    if (data.length === 0 || req.query.query === Empty.DATA) {
-      res.json(Empty.SEARCH);
-    } else {
-      res.json(data);
+    if (typingData === ``) {
+      data = [];
     }
+
+    res.json(data);
     logger.debug(`${req.method} /${PathName.SEARCH}${req.url} --> res status code ${res.statusCode}`);
 
   } catch (error) {
