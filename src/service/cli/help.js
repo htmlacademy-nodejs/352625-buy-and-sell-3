@@ -13,8 +13,8 @@ const message = `
     Команды:
     ${CommandsNames.VERSION}             выводит номер версии
     ${CommandsNames.HELP}                печатает этот текст
-    ${CommandsNames.GENERATE} <count>    формирует файл mocks.json
     ${CommandsNames.SERVER} <port>       запускает dev-сервер
+    ${CommandsNames.DB_CONNECT}          устанавливает соединение с базой данных
     `;
 
 module.exports = {
