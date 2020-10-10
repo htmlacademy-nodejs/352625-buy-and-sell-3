@@ -41,6 +41,7 @@ const renderHomePage = async (req, res) => {
     logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
   } catch (error) {
+    render404Page(req, res);
     logger.error(`Error occurs: ${error}`);
   }
 };
@@ -61,6 +62,7 @@ const renderCategoryPage = async (req, res) => {
     logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
   } catch (error) {
+    render404Page(req, res);
     logger.error(`Error occurs: ${error}`);
   }
 };
