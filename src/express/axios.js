@@ -17,6 +17,8 @@ const getSearch = async (search) => (await axios.get(encodeURI(`${UriApi.SEARCH}
 
 const getCategories = async () => (await axios.get(UriApi.CATEGORIES)).data;
 
+const getCategory = async (categoryId) => (await axios.get(`${UriApi.CATEGORIES}/${categoryId}`)).data;
+
 const getAuth = async () => (await axios.get(UriApi.AUTH)).data;
 
 module.exports = {
@@ -27,5 +29,6 @@ module.exports = {
   postOffer,
   getSearch,
   getCategories,
+  getCategory,
   getAuth,
 };

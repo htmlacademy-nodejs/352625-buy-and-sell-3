@@ -10,6 +10,7 @@ const {
   postOffer,
   getSearch,
   getCategories,
+  getCategory,
   getAuth
 } = require(`./../axios.js`);
 
@@ -47,24 +48,17 @@ const renderHomePage = async (req, res) => {
 const renderCategoryPage = async (req, res) => {
   try {
     const activeCategoryId = req.params.categoryId;
-    const offers = await getOffers();
+    const activeCategory = await getCategory(activeCategoryId);
     const categories = await getCategories();
     const auth = await getAuth();
 
-    if (!categories.find((item) => item.id === activeCategoryId)) {
-      render404Page(req, res);
-
-    } else {
-      res.render(`category`, {
-        auth,
-        offers,
-        categories,
-        activeCategoryId,
-        // getCategoryById,
-        // getOffersByCategory,
-      });
-      logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
-    }
+    res.render(`category`, {
+      auth,
+      categories,
+      activeCategory,
+      activeCategoryId,
+    });
+    logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
   } catch (error) {
     logger.error(`Error occurs: ${error}`);

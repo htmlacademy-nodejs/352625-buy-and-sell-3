@@ -13,6 +13,7 @@ const Empty = {
   COMMENTS: [],
   COMMENT: {},
   CATEGORIES: [],
+  CATEGORY: {},
   DATA: ``,
   SEARCH: [],
 };
