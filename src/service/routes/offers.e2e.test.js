@@ -34,6 +34,9 @@ describe(`When GET '/${PathName.OFFERS}'`, () => {
   });
 });
 
+// test /offers/fresh
+// test /offers/mostDiscussed
+
 describe(`When GET '/${PathName.OFFERS}/${Offer.RIGHT_ID}'`, () => {
   test(`status code should be ${HttpCode.OK}`, async () => {
     const res = await request(app).get(`/${PathName.OFFERS}/${Offer.RIGHT_ID}`);

@@ -7,7 +7,15 @@ const getAuth = async () => {
     where: {
       [`is_auth`]: true
     },
-    include: [`user`],
+    include: {
+      model: db.Author,
+      as: `user`,
+      attributes: [`id`, `firstname`, `lastname`],
+      include: {
+        model: db.Picture,
+        as: `avatar`
+      }
+    },
   });
 
   let result = {

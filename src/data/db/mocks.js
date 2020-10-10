@@ -148,6 +148,10 @@ const offersCategories = [
     [`offer_id`]: 3,
     [`category_id`]: 5,
   },
+  {
+    [`offer_id`]: 4,
+    [`category_id`]: 2,
+  },
 ];
 
 const comments = [

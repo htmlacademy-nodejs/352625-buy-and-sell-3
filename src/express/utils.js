@@ -15,25 +15,8 @@ const Items = {
   MOST_DISCUSSED: 4,
 };
 
-const getOffersByCategory = (offers, category) => {
-  return offers
-    .filter((offer) => offer.category
-      .map((item) => item.id)
-      .includes(category.id));
-};
-
 const getCategoryById = (categories, id) => {
   return categories.filter((category) => category.id === id)[0];
-};
-
-const getFreshItems = (offers, count = Items.FRESH) => {
-  const sortedData = offers.sort((a, b) => b.createdDate.machine - a.createdDate.machine);
-
-  if (count >= offers.length) {
-    return sortedData;
-  } else {
-    return sortedData.slice(0, count);
-  }
 };
 
 const getMostDiscussedItems = (offers, count = Items.MOST_DISCUSSED) => {
@@ -48,8 +31,6 @@ const getMostDiscussedItems = (offers, count = Items.MOST_DISCUSSED) => {
 
 module.exports = {
   UriApi,
-  getOffersByCategory,
   getCategoryById,
-  getFreshItems,
   getMostDiscussedItems,
 };

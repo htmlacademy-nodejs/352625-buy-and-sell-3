@@ -1,16 +1,15 @@
 'use strict';
 
 const {
-  getOffersByCategory,
   getCategoryById,
-  getFreshItems,
-  getMostDiscussedItems,
 } = require(`./../utils.js`);
 
 const {PathName} = require(`./constants.js`);
 
 const {
   getOffers,
+  getMostDiscussed,
+  getFreshItems,
   getOffer,
   postOffer,
   getSearch,
@@ -37,9 +36,8 @@ const renderHomePage = async (req, res) => {
       auth,
       offers,
       categories,
-      getOffersByCategory,
-      freshItems: getFreshItems(offers),
-      mostDiscussedItems: getMostDiscussedItems(offers),
+      freshItems: await getFreshItems(),
+      mostDiscussedItems: await getMostDiscussed(),
     });
     logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 

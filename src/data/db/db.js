@@ -29,7 +29,7 @@ const Comment = require(`./models/comment.js`)(sequelize);
 
 Author.belongsTo(Picture, {
   foreignKey: `picture_id`,
-  as: `picture`,
+  as: `avatar`,
 });
 
 Author.hasMany(Offer, {
@@ -114,6 +114,7 @@ module.exports = {
     Auth,
     Category,
     Offer,
+    OfferCategory,
     Comment,
   },
   initDb,

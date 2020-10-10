@@ -5,7 +5,7 @@ const {Router} = require(`express`);
 
 const {Empty, PathName} = require(`./../routes/constants.js`);
 const {HttpCode} = require(`./../cli/constants.js`);
-const {getOffers} = require(`./utils/offers.js`);
+const {getOffers, getFreshItems, getMostDiscussed} = require(`./utils/offers.js`);
 const {getOffer} = require(`./utils/offer.js`);
 const {getCommentsByOfferId} = require(`./utils/comments.js`);
 
@@ -31,12 +31,38 @@ offersRouter.get(`/`, async (req, res) => {
   try {
     const result = await getOffers();
     res.json(result);
+    logger.debug(`${req.method} /${PathName.OFFERS}${req.url} --> res status code ${res.statusCode}`);
 
   } catch (error) {
     res.status(HttpCode.INTERNAL_SERVER_ERROR).json(Empty.OFFERS);
     logger.error(`Error occurs: ${error}`);
   }
-  logger.debug(`${req.method} /${PathName.OFFERS}${req.url} --> res status code ${res.statusCode}`);
+});
+
+offersRouter.get(`/fresh`, async (req, res) => {
+  try {
+    const result = await getFreshItems();
+    res.json(result);
+    logger.debug(`${req.method} /${PathName.OFFERS}${req.url} --> res status code ${res.statusCode}`);
+
+  } catch (error) {
+    res.status(HttpCode.INTERNAL_SERVER_ERROR).json(Empty.OFFERS);
+    logger.error(`Error occurs: ${error}`);
+
+  }
+});
+
+offersRouter.get(`/mostDiscussed`, async (req, res) => {
+  try {
+    const result = await getMostDiscussed();
+    res.json(result);
+    logger.debug(`${req.method} /${PathName.OFFERS}${req.url} --> res status code ${res.statusCode}`);
+
+  } catch (error) {
+    res.status(HttpCode.INTERNAL_SERVER_ERROR).json(Empty.OFFERS);
+    logger.error(`Error occurs: ${error}`);
+
+  }
 });
 
 offersRouter.get(`/:offerId`, async (req, res) => {
