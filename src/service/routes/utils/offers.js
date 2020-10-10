@@ -66,7 +66,7 @@ const getMostDiscussed = async (itemsCount = Items.MOST_DISCUSSED) => {
     order: [
       [`count`, `desc`]
     ],
-
+    // TODO limit всегда отдает 1 пост, вне зависимости от указанного количества
     limit: itemsCount,
   });
 

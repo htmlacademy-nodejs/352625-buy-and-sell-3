@@ -4,9 +4,9 @@ const request = require(`supertest`);
 
 const {app} = require(`./../cli/server.js`);
 const {PathName, Empty} = require(`./../routes/constants.js`);
-const {FILE_NAME, HttpCode} = require(`./../cli/constants.js`);
+const {HttpCode} = require(`./../cli/constants.js`);
 
-const {getOffers} = require(`./utils/offers.js`);
+const {getOffers, getFreshItems, getMostDiscussed} = require(`./utils/offers.js`);
 const {getOffer} = require(`./utils/offer.js`);
 const {getCommentsByOfferId} = require(`./utils/comments.js`);
 
@@ -26,7 +26,7 @@ describe(`When GET '/${PathName.OFFERS}'`, () => {
     expect(res.statusCode).toBe(HttpCode.OK);
   });
 
-  test(`response should be equal to mock offers from '${FILE_NAME}'`, async () => {
+  test(`response should be equal to offers from database'`, async () => {
     const res = await request(app).get(`/${PathName.OFFERS}`);
     const data = await getOffers();
     const result = JSON.parse(JSON.stringify(data));
@@ -34,8 +34,35 @@ describe(`When GET '/${PathName.OFFERS}'`, () => {
   });
 });
 
-// test /offers/fresh
-// test /offers/mostDiscussed
+describe(`When GET '/${PathName.OFFERS}/fresh'`, () => {
+  test(`status code should be ${HttpCode.OK}`, async () => {
+    const res = await request(app).get(`/${PathName.OFFERS}`);
+    expect(res.statusCode).toBe(HttpCode.OK);
+  });
+
+  test(`response should be equal to fresh offers from database'`, async () => {
+    const res = await request(app).get(`/${PathName.OFFERS}/fresh`);
+    const data = await getFreshItems();
+    const result = JSON.parse(JSON.stringify(data));
+    expect(res.body).toStrictEqual(result);
+  });
+
+});
+
+describe(`When GET '/${PathName.OFFERS}/mostDiscussed'`, () => {
+  test(`status code should be ${HttpCode.OK}`, async () => {
+    const res = await request(app).get(`/${PathName.OFFERS}`);
+    expect(res.statusCode).toBe(HttpCode.OK);
+  });
+
+  test(`response should be equal to most discussed offers from database'`, async () => {
+    const res = await request(app).get(`/${PathName.OFFERS}/mostDiscussed`);
+    const data = await getMostDiscussed();
+    const result = JSON.parse(JSON.stringify(data));
+    expect(res.body).toStrictEqual(result);
+  });
+
+});
 
 describe(`When GET '/${PathName.OFFERS}/${Offer.RIGHT_ID}'`, () => {
   test(`status code should be ${HttpCode.OK}`, async () => {

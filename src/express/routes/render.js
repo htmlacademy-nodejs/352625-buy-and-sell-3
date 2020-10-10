@@ -1,9 +1,5 @@
 'use strict';
 
-const {
-  getCategoryById,
-} = require(`./../utils.js`);
-
 const {PathName} = require(`./constants.js`);
 
 const {
@@ -16,6 +12,8 @@ const {
   getCategories,
   getAuth
 } = require(`./../axios.js`);
+
+const {getHumanDate} = require(`./../utils.js`);
 
 const {getLogger} = require(`./../../service/logger.js`);
 
@@ -62,8 +60,8 @@ const renderCategoryPage = async (req, res) => {
         offers,
         categories,
         activeCategoryId,
-        getCategoryById,
-        getOffersByCategory,
+        // getCategoryById,
+        // getOffersByCategory,
       });
       logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
     }
@@ -81,6 +79,7 @@ const renderTicketPage = async (req, res) => {
     res.render(`ticket`, {
       auth,
       offer,
+      getHumanDate,
     });
     logger.debug(`${req.method} ${PathName.OFFERS}${req.url} --> res status code ${res.statusCode}`);
 
