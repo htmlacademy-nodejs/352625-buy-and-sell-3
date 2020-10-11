@@ -9,6 +9,8 @@ const getMostDiscussed = async () => (await axios.get(`${UriApi.OFFERS}/mostDisc
 
 const getFreshItems = async () => (await axios.get(`${UriApi.OFFERS}/fresh`)).data;
 
+const getMyOffers = async (userId) => (await axios.get(`${UriApi.OFFERS}/byAuthor/${userId}`)).data;
+
 const getOffer = async (url) => (await axios.get(encodeURI(`${UriApi.OFFERS}/${url}`))).data;
 
 const postOffer = (data) => axios.post(UriApi.OFFERS, {json: data});
@@ -25,6 +27,7 @@ module.exports = {
   getOffers,
   getMostDiscussed,
   getFreshItems,
+  getMyOffers,
   getOffer,
   postOffer,
   getSearch,

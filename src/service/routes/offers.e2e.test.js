@@ -6,7 +6,7 @@ const {app} = require(`./../cli/server.js`);
 const {PathName, Empty} = require(`./../routes/constants.js`);
 const {HttpCode} = require(`./../cli/constants.js`);
 
-const {getOffers, getFreshItems, getMostDiscussed} = require(`./utils/offers.js`);
+const {getOffers, getFreshItems, getMostDiscussed, getOffersByAuthorId} = require(`./utils/offers.js`);
 const {getOffer} = require(`./utils/offer.js`);
 const {getCommentsByOfferId} = require(`./utils/comments.js`);
 
@@ -18,6 +18,11 @@ const Offer = {
 const Comment = {
   RIGHT_ID: 1,
   WRONG_ID: encodeURI(`фжыдвл`),
+};
+
+const Author = {
+  RIGHT_ID: 1,
+  WRONG_ID: encodeURI(`jkdcs`),
 };
 
 describe(`When GET '/${PathName.OFFERS}'`, () => {
@@ -113,6 +118,32 @@ describe(`When GET '/${PathName.OFFERS}/${Offer.WRONG_ID}/comments'`, () => {
   test(`response should be be equal to '${Empty.COMMENTS}'`, async () => {
     const res = await request(app).get(`/${PathName.OFFERS}/${Offer.WRONG_ID}/comments`);
     expect(res.body).toStrictEqual(Empty.COMMENTS);
+  });
+});
+
+describe(`When GET '/${PathName.OFFERS}/byAuthor/${Author.RIGHT_ID}'`, () => {
+  test(`status code should be ${HttpCode.OK}`, async () => {
+    const res = await request(app).get(`/${PathName.OFFERS}/byAuthor/${Author.RIGHT_ID}`);
+    expect(res.statusCode).toBe(HttpCode.OK);
+  });
+
+  test(`response should be equal to author's offers from database`, async () => {
+    const res = await request(app).get(`/${PathName.OFFERS}/byAuthor/${Author.RIGHT_ID}`);
+    const data = await getOffersByAuthorId(Author.RIGHT_ID);
+    const result = JSON.parse(JSON.stringify(data));
+    expect(res.body).toStrictEqual(result);
+  });
+});
+
+describe(`When GET '/${PathName.OFFERS}/byAuthor/${Author.WRONG_ID}'`, () => {
+  test(`status code should be ${HttpCode.BAD_REQUEST}`, async () => {
+    const res = await request(app).get(`/${PathName.OFFERS}/byAuthor/${Author.WRONG_ID}`);
+    expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
+  });
+
+  test(`response should be equal ${Empty.OFFERS}`, async () => {
+    const res = await request(app).get(`/${PathName.OFFERS}/byAuthor/${Author.WRONG_ID}`);
+    expect(res.body).toStrictEqual(Empty.OFFERS);
   });
 });
 

@@ -72,4 +72,27 @@ const getMostDiscussed = async (itemsCount = Items.MOST_DISCUSSED) => {
 
 };
 
-module.exports = {getOffers, getFreshItems, getMostDiscussed};
+const getOffersByAuthorId = async (authorId) => {
+  return await db.Offer.findAll({
+    attributes: [`id`, `title`, `sum`],
+    include: [{
+      model: db.Picture,
+      as: `picture`,
+      attributes: [`normal`, `double`],
+    }, {
+      model: db.Type,
+      as: `type`,
+      attributes: [`name`],
+    }, {
+      model: db.Category,
+      as: `categories`,
+      attributes: [`id`, `name`],
+      through: {attributes: []},
+    }],
+    where: {
+      [`author_id`]: authorId,
+    },
+  });
+};
+
+module.exports = {getOffers, getFreshItems, getMostDiscussed, getOffersByAuthorId};

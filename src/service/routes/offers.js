@@ -5,7 +5,7 @@ const {Router} = require(`express`);
 
 const {Empty, PathName} = require(`./../routes/constants.js`);
 const {HttpCode} = require(`./../cli/constants.js`);
-const {getOffers, getFreshItems, getMostDiscussed} = require(`./utils/offers.js`);
+const {getOffers, getFreshItems, getMostDiscussed, getOffersByAuthorId} = require(`./utils/offers.js`);
 const {getOffer} = require(`./utils/offer.js`);
 const {getCommentsByOfferId} = require(`./utils/comments.js`);
 
@@ -111,6 +111,30 @@ offersRouter.get(`/:offerId/comments`, async (req, res) => {
     logger.error(`Error occurs: ${error}`);
   }
   logger.debug(`${req.method} /${PathName.OFFERS}${req.url} --> res status code ${res.statusCode}`);
+});
+
+offersRouter.get(`/byAuthor/:authorId`, async (req, res) => {
+  try {
+    let data = null;
+    const authorId = parseInt(req.params.authorId, 10);
+
+    if (authorId) {
+      data = await getOffersByAuthorId(authorId);
+    }
+
+    if (data) {
+      res.json(data);
+
+    } else {
+      res.status(HttpCode.BAD_REQUEST).json(Empty.OFFERS);
+    }
+    logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
+
+  } catch (error) {
+    res.status(HttpCode.INTERNAL_SERVER_ERROR).json(Empty.OFFER);
+    logger.error(`Error occurs: ${error}`);
+
+  }
 });
 
 offersRouter.post(`/`, (req, res) => {

@@ -6,6 +6,7 @@ const {
   getOffers,
   getMostDiscussed,
   getFreshItems,
+  getMyOffers,
   getOffer,
   postOffer,
   getSearch,
@@ -107,12 +108,21 @@ const renderTicketEditPage = async (req, res) => {
 const renderMyTicketsPage = async (req, res) => {
   try {
     const auth = await getAuth();
+    const reqUrl = req.originalUrl;
 
-    res.render(`my-tickets`, {
-      reqUrl: req.originalUrl,
-      auth,
-    });
-    logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
+    if (!auth.status || typeof auth.user.id !== `number`) {
+      render404Page(req, res);
+    } else {
+      const myOffers = await getMyOffers(auth.user.id);
+
+      res.render(`my-tickets`, {
+        reqUrl,
+        auth,
+        myOffers,
+        getHumanDate,
+      });
+    }
+    logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
   } catch (error) {
     logger.error(`Error occurs: ${error}`);
