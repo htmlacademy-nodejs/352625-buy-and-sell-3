@@ -9,7 +9,7 @@ block content
         each item in myOffers
           .comments__block
             .comments__header
-              a.announce-card(href="#")
+              a.announce-card(href=`/offers/edit/${item.id}`)
                 h2.announce-card__title= item.title
                 span.announce-card__info
                   span.announce-card__price= `₽ ${item.sum}`
