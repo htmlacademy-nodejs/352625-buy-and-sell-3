@@ -30,7 +30,7 @@ block content
               .ticket-form__row
                 select#category-field.form__select.js-multiple-select(name="category" data-label="Выбрать категорию публикации" multiple="")
                   each category in categories
-                    if offer.category.find((item) => item.id === category.id)
+                    if offer.categories.find((item) => item.id === category.id)
                       option(value=`${category.id}` selected="")= category.name
                     else
                       option(value=`${category.id}`)= category.name
