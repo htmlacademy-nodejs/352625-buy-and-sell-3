@@ -37,6 +37,10 @@ const getCategory = async (categoryId) => {
         as: `categories`,
         attributes: [`id`, `name`],
         through: {attributes: []},
+      }, {
+        model: db.Type,
+        as: `type`,
+        attributes: [`name`],
       }]
 
     }, {
