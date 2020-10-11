@@ -132,16 +132,30 @@ const renderMyTicketsPage = async (req, res) => {
 const renderCommentsPage = async (req, res) => {
   try {
     const auth = await getAuth();
-    const quantity = auth.userOffers.length < 3
-      ? auth.userOffers.length
-      : 3;
-    const offersForRender = auth.userOffers.slice(0, quantity);
+    const reqUrl = req.originalUrl;
 
-    res.render(`comments`, {
-      reqUrl: req.originalUrl,
-      auth,
-      offersForRender,
-    });
+    if (!auth.status || typeof auth.user.id !== `number`) {
+      render404Page(req, res);
+    } else {
+      const myOffers = await getMyOffers(auth.user.id);
+
+      res.render(`comments`, {
+        reqUrl,
+        auth,
+        myOffers,
+      });
+    }
+
+    // const quantity = auth.userOffers.length < 3
+    //   ? auth.userOffers.length
+    //   : 3;
+    // const offersForRender = auth.userOffers.slice(0, quantity);
+    //
+    // res.render(`comments`, {
+    //   reqUrl: req.originalUrl,
+    //   auth,
+    //   offersForRender,
+    // });
     logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
   } catch (error) {

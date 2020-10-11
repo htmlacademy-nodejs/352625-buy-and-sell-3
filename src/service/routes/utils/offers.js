@@ -88,6 +88,22 @@ const getOffersByAuthorId = async (authorId) => {
       as: `categories`,
       attributes: [`id`, `name`],
       through: {attributes: []},
+    }, {
+      model: db.Comment,
+      as: `comments`,
+      attributes: [`text`],
+
+      include: {
+        model: db.Author,
+        as: `author`,
+        attributes: [`firstname`, `lastname`],
+
+        include: {
+          model: db.Picture,
+          as: `avatar`,
+          attributes: [`normal`, `double`],
+        }
+      }
     }],
     where: {
       [`author_id`]: authorId,
