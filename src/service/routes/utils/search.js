@@ -13,7 +13,23 @@ const getSearch = async (typingData) => {
       title: {
         [Op.like]: `%${typingData}%`,
       }
-    }
+    },
+    attributes: [`id`, `title`, `description`, `sum`],
+
+    include: [{
+      model: db.Picture,
+      as: `picture`,
+      attributes: [`normal`, `double`],
+    }, {
+      model: db.Type,
+      as: `type`,
+      attributes: [`name`],
+    }, {
+      model: db.Category,
+      as: `categories`,
+      attributes: [`id`, `name`],
+      through: {attributes: []},
+    }]
   });
 };
 

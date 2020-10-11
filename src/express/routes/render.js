@@ -145,17 +145,6 @@ const renderCommentsPage = async (req, res) => {
         myOffers,
       });
     }
-
-    // const quantity = auth.userOffers.length < 3
-    //   ? auth.userOffers.length
-    //   : 3;
-    // const offersForRender = auth.userOffers.slice(0, quantity);
-    //
-    // res.render(`comments`, {
-    //   reqUrl: req.originalUrl,
-    //   auth,
-    //   offersForRender,
-    // });
     logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
   } catch (error) {
@@ -182,13 +171,12 @@ const renderNewTicketPage = async (req, res) => {
 const renderSearchResultsPage = async (req, res) => {
   try {
     const auth = await getAuth();
-    const offers = await getOffers();
     const result = await getSearch(req.query.search);
 
     res.render(`search-result`, {
       auth,
       result,
-      freshItems: getFreshItems(offers),
+      freshItems: await getFreshItems(),
     });
     logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
