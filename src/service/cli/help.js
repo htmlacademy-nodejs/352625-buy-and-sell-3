@@ -15,6 +15,7 @@ const message = `
     ${CommandsNames.HELP}                печатает этот текст
     ${CommandsNames.SERVER} <port>       запускает dev-сервер
     ${CommandsNames.DB_CONNECT}          устанавливает соединение с базой данных
+    ${CommandsNames.FILL_DB} <count>      наполняет базу данных моками
     `;
 
 module.exports = {
