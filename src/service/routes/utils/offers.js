@@ -35,8 +35,8 @@ const getFreshItems = async (itemsCount = Items.FRESH) => {
 
 };
 
-const getMostDiscussed = async (itemsCount = Items.MOST_DISCUSSED) => {
-  return await db.Offer.findAll({
+const getMostDiscussed = async () => {
+  return db.Offer.findAll({
     attributes: {
       include: [sequelize.fn(`count`, sequelize.col(`comments.id`)), `count`]
     },
@@ -55,6 +55,7 @@ const getMostDiscussed = async (itemsCount = Items.MOST_DISCUSSED) => {
       as: `categories`,
       attributes: [`id`, `name`],
       duplicating: false,
+      required: false,
       through: {attributes: []},
     }, {
       model: db.Type,
@@ -66,10 +67,9 @@ const getMostDiscussed = async (itemsCount = Items.MOST_DISCUSSED) => {
     order: [
       [`count`, `desc`]
     ],
-    // TODO limit всегда отдает 1 пост, вне зависимости от указанного количества
-    limit: itemsCount,
+    // TODO limit работает не корректно - не разобрался почему
+    // limit: itemsCount,
   });
-
 };
 
 const getOffersByAuthorId = async (authorId) => {

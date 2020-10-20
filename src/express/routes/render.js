@@ -1,6 +1,7 @@
 'use strict';
 
 const {PathName} = require(`./constants.js`);
+const {Items} = require(`../../service/routes/constants.js`);
 
 const {
   getOffers,
@@ -31,13 +32,16 @@ const renderHomePage = async (req, res) => {
     const offers = await getOffers();
     const categories = await getCategories();
     const auth = await getAuth();
+    const freshItems = await getFreshItems();
+    // TODO limit корректно не сработал, пришлось делать slice.
+    const mostDiscussedItems = [...(await getMostDiscussed())].slice(0, Items.MOST_DISCUSSED);
 
     res.render(`main`, {
       auth,
       offers,
       categories,
-      freshItems: await getFreshItems(),
-      mostDiscussedItems: await getMostDiscussed(),
+      freshItems,
+      mostDiscussedItems,
     });
     logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
