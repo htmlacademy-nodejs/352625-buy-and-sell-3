@@ -1,7 +1,6 @@
 'use strict';
 
 const express = require(`express`);
-
 const pino = require(`pino`)(`./src/service/logs/service.log`);
 const expressPino = require(`express-pino-logger`)({
   logger: pino
@@ -12,30 +11,25 @@ const {
   DEFAULT_API_PORT,
 } = require(`./constants.js`);
 
-const {PathName} = require(`./../routes/constants.js`);
+const routes = require(`../api`);
 
-const offersRouter = require(`./../routes/offers.js`);
-const categoriesRouter = require(`./../routes/categories.js`);
-const searchRouter = require(`./../routes/search.js`);
-const authRouter = require(`./../routes/auth.js`);
 const {getLogger} = require(`./../logger.js`);
 
 const logger = getLogger();
 
 const app = express();
 
-app.use(`/${PathName.OFFERS}`, offersRouter);
-app.use(`/${PathName.CATEGORIES}`, categoriesRouter);
-app.use(`/${PathName.SEARCH}`, searchRouter);
-app.use(`/${PathName.AUTH}`, authRouter);
-
 app.use(express.json());
+
+app.use(routes);
+
 app.use(express.urlencoded({extended: false}));
 
 app.set(`json spaces`, 2);
 
 app.use((req, res) => {
   res.status(404).send(`Page not exists`);
+  logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 });
 
 app.use(expressPino);

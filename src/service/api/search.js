@@ -11,7 +11,7 @@ const logger = getLogger();
 module.exports = (app, searchService) => {
   const route = new Router();
 
-  app.use(`${PathName.SEARCH}`, route);
+  app.use(`/${PathName.SEARCH}`, route);
 
   route.get(`/`, async (req, res) => {
     try {

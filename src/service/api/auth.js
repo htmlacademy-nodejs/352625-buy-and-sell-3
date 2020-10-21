@@ -11,7 +11,7 @@ const logger = getLogger();
 module.exports = (app, authService) => {
   const route = new Router();
 
-  app.use(`${PathName.AUTH}`, route);
+  app.use(`/${PathName.AUTH}`, route);
 
   route.get(`/`, async (req, res) => {
     try {

@@ -11,7 +11,7 @@ const logger = getLogger();
 module.exports = (app, categoryService) => {
   const route = new Router();
 
-  app.use(`${PathName.CATEGORIES}`, route);
+  app.use(`/${PathName.CATEGORIES}`, route);
 
   route.get(`/`, async (req, res) => {
     try {

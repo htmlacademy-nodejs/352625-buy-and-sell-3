@@ -11,7 +11,7 @@ const logger = getLogger();
 module.exports = (app, offerService, commentService) => {
   const route = new Router();
 
-  app.use(`${PathName.OFFERS}`, route);
+  app.use(`/${PathName.OFFERS}`, route);
 
   route.get(`/`, async (req, res) => {
     try {
