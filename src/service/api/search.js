@@ -1,8 +1,8 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {PathName} = require(`../routes/constants.js`);
-const {Empty, HttpCode} = require(`../cli/constants.js`);
+const {Empty, PathName} = require(`../routes/constants.js`);
+const {HttpCode} = require(`../cli/constants.js`);
 const {getLogger} = require(`../../service/logger.js`);
 
 const logger = getLogger();
