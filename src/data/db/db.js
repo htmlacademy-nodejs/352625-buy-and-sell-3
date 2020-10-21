@@ -4,6 +4,7 @@ const {Sequelize} = require(`sequelize`);
 
 require(`dotenv`).config();
 
+const initModels = require(`./models`);
 const {getLogger} = require(`./../../../src/service/logger.js`);
 
 const logger = getLogger();
@@ -18,77 +19,17 @@ const sequelize = new Sequelize(
     }
 );
 
-const Type = require(`./models/type.js`)(sequelize);
-const Picture = require(`./models/picture.js`)(sequelize);
-const Author = require(`./models/author.js`)(sequelize);
-const Auth = require(`./models/auth.js`)(sequelize);
-const Category = require(`./models/category.js`)(sequelize);
-const Offer = require(`./models/offer.js`)(sequelize);
-const OfferCategory = require(`./models/offer-category.js`)(sequelize);
-const Comment = require(`./models/comment.js`)(sequelize);
+const {
+  Type,
+  Picture,
+  Author,
+  Auth,
+  Category,
+  Offer,
+  OfferCategory,
+  Comment,
+} = initModels(sequelize);
 
-Author.belongsTo(Picture, {
-  foreignKey: `picture_id`,
-  as: `avatar`,
-});
-
-Author.hasMany(Offer, {
-  foreignKey: `author_id`,
-});
-
-Auth.belongsTo(Author, {
-  foreignKey: `author_id`,
-  as: `user`,
-});
-
-Category.belongsTo(Picture, {
-  foreignKey: `picture_id`,
-  as: `picture`
-});
-
-Category.belongsToMany(Offer, {
-  as: `offers`,
-  foreignKey: `category_id`,
-  through: `OfferCategory`,
-  timestamps: false,
-});
-
-Offer.belongsToMany(Category, {
-  as: `categories`,
-  foreignKey: `offer_id`,
-  through: `OfferCategory`,
-  timestamps: false,
-});
-
-Offer.hasMany(Comment, {
-  foreignKey: `offer_id`,
-  as: `comments`,
-});
-
-Offer.belongsTo(Type, {
-  foreignKey: `type_id`,
-  as: `type`,
-});
-
-Offer.belongsTo(Picture, {
-  foreignKey: `picture_id`,
-  as: `picture`,
-});
-
-Offer.belongsTo(Author, {
-  foreignKey: `author_id`,
-  as: `author`,
-});
-
-Comment.belongsTo(Author, {
-  foreignKey: `author_id`,
-  as: `author`,
-});
-
-Comment.belongsTo(Offer, {
-  foreignKey: `offer_id`,
-  as: `offer`,
-});
 
 const initDb = async (content) => {
   await sequelize.sync({force: true}); // TODO: delete {force: true} in production
