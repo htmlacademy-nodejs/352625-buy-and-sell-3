@@ -2,7 +2,7 @@
 
 const chalk = require(`chalk`);
 
-const {sequelize, initDb} = require(`./../../data/db/db.js`);
+const {sequelize, initDb} = require(`./../../data/db`);
 
 const DEFAULT_COUNT = 10;
 const MAX_COUNT = 100;
@@ -67,9 +67,8 @@ module.exports = {
 
     (async () => {
       const content = await generateContent(postsCount, AUTH_USER_ID);
-      await initDb(content);
+      await initDb(content, sequelize);
       await sequelize.close();
     })();
-
   }
 };

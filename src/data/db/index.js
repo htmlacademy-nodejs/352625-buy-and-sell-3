@@ -1,23 +1,14 @@
 'use strict';
 
-const {Sequelize} = require(`sequelize`);
-
 require(`dotenv`).config();
 
 const initModels = require(`./models`);
+const {getDbConnection} = require(`./utils.js`);
 const {getLogger} = require(`./../../../src/service/logger.js`);
 
 const logger = getLogger();
 
-const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {
-      host: process.env.DB_HOST,
-      dialect: process.env.DB_DIALECT,
-    }
-);
+const sequelize = getDbConnection(process.env.DB_NAME);
 
 const {
   Type,
@@ -31,8 +22,8 @@ const {
 } = initModels(sequelize);
 
 
-const initDb = async (content) => {
-  await sequelize.sync({force: true}); // TODO: delete {force: true} in production
+const initDb = async (content, orm) => {
+  await orm.sync({force: true}); // TODO: delete {force: true} in production
   logger.info(`The database structure is created.`);
 
   await Type.bulkCreate(content.types);

@@ -1,7 +1,7 @@
 'use strict';
 
 const {Op} = require(`sequelize`);
-const {db} = require(`./../../data/db/db.js`);
+const {db} = require(`./../../data/db`);
 const {SEARCH_LIMIT} = require(`../routes/constants.js`);
 
 
