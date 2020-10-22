@@ -7,8 +7,7 @@ const offer = require(`./offer.js`);
 const OfferService = require(`../data-service/offer.js`);
 const CommentService = require(`../data-service/comment.js`);
 
-const {PathName, Empty} = require(`../routes/constants.js`);
-const {HttpCode} = require(`../cli/constants.js`);
+const {HttpCode, PathName, Empty} = require(`../constants.js`);
 const mocks = require(`../../data/db/fake/mocks.js`);
 const {fakeDb, initDb, dropDb, fakeSequelize} = require(`../../data/db/fake`);
 
@@ -18,11 +17,6 @@ const commentService = new CommentService(fakeDb);
 const Offer = {
   RIGHT_ID: 1,
   WRONG_ID: encodeURI(`ылдвапр`),
-};
-
-const Comment = {
-  RIGHT_ID: 1,
-  WRONG_ID: encodeURI(`фжыдвл`),
 };
 
 const Author = {

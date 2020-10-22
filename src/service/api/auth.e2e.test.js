@@ -6,8 +6,7 @@ const request = require(`supertest`);
 const auth = require(`./auth.js`);
 const AuthService = require(`../data-service/auth.js`);
 
-const {PathName} = require(`../routes/constants.js`);
-const {HttpCode} = require(`../cli/constants.js`);
+const {HttpCode, PathName} = require(`../constants.js`);
 const mocks = require(`../../data/db/fake/mocks.js`);
 const {fakeDb, initDb, dropDb, fakeSequelize} = require(`../../data/db/fake`);
 

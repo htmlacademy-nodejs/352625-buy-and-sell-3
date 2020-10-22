@@ -2,7 +2,7 @@
 
 const {Op} = require(`sequelize`);
 const {db} = require(`./../../data/db`);
-const {SEARCH_LIMIT} = require(`../routes/constants.js`);
+const {SEARCH_LIMIT} = require(`../constants.js`);
 
 
 class SearchService {

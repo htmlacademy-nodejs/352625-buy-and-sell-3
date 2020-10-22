@@ -1,7 +1,7 @@
 'use strict';
 
 const {PathName} = require(`./constants.js`);
-const {Items} = require(`../../service/routes/constants.js`);
+const {Items} = require(`../../service/constants.js`);
 
 const {
   getOffers,

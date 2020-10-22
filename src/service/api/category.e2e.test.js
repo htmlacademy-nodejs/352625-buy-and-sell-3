@@ -6,8 +6,7 @@ const request = require(`supertest`);
 const category = require(`./category.js`);
 const CategoryService = require(`../data-service/category.js`);
 
-const {PathName, Empty} = require(`../routes/constants.js`);
-const {HttpCode} = require(`../cli/constants.js`);
+const {HttpCode, PathName, Empty} = require(`../constants.js`);
 const mocks = require(`../../data/db/fake/mocks.js`);
 const {fakeDb, initDb, dropDb, fakeSequelize} = require(`../../data/db/fake`);
 
