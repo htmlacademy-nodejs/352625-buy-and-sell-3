@@ -6,8 +6,12 @@ const {getLogger} = require(`./../../service/logger.js`);
 
 const logger = getLogger();
 
+const validateOffer = () => {
+  // TODO: validating code is coming soon...
+  return true;
+};
 
-module.exports = (app, offerService, commentService) => {
+module.exports = (app, offerService, commentService, authService) => {
   const route = new Router();
 
   app.use(`/${PathName.OFFERS}`, route);
@@ -118,6 +122,51 @@ module.exports = (app, offerService, commentService) => {
       res.status(HttpCode.INTERNAL_SERVER_ERROR).json(Empty.OFFER);
       logger.error(`Error occurs: ${error}`);
     }
+  });
+
+
+  route.post(`/`, async (req, res) => {
+    try {
+      const auth = await authService.get();
+
+      if (!validateOffer() || !auth.status) {
+        res.status(HttpCode.BAD_REQUEST).send(`Incorrect article format or unauthorized access`);
+      } else {
+        await offerService.add(req.body, auth.user.id);
+        res.status(HttpCode.OK).send(req.body);
+      }
+      logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
+
+    } catch (error) {
+      res.status(HttpCode.INTERNAL_SERVER_ERROR).json(`${error}`);
+      logger.error(`Error occurs: ${error}`);
+    }
+  });
+
+
+  route.put(`/:offerId`, async (req, res) => {
+    try {
+      let data = null;
+      const offerId = parseInt(req.params.offerId, 10);
+
+      if (offerId) {
+        data = await offerService.findOne(offerId);
+      }
+
+      if (data) {
+        await offerService.update(req.body, offerId);
+        res.status(HttpCode.OK).send(req.body);
+
+      } else {
+        res.status(HttpCode.BAD_REQUEST).send(Empty.OFFER);
+      }
+      logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
+
+    } catch (error) {
+      res.status(HttpCode.INTERNAL_SERVER_ERROR).json(`${error}`);
+      logger.error(`Error occurs: ${error}`);
+    }
+
   });
 };
 

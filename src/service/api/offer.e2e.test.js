@@ -1,11 +1,13 @@
 'use strict';
 
+const moment = require(`moment`);
 const express = require(`express`);
 const request = require(`supertest`);
 
 const offer = require(`./offer.js`);
 const OfferService = require(`../data-service/offer.js`);
 const CommentService = require(`../data-service/comment.js`);
+const AuthService = require(`../data-service/auth.js`);
 
 const {HttpCode, PathName, Empty} = require(`../constants.js`);
 const mocks = require(`../../data/db/fake/mocks.js`);
@@ -13,6 +15,7 @@ const {fakeDb, initDb, dropDb, fakeSequelize} = require(`../../data/db/fake`);
 
 const offerService = new OfferService(fakeDb, fakeSequelize);
 const commentService = new CommentService(fakeDb);
+const authService = new AuthService(fakeDb);
 
 const Offer = {
   RIGHT_ID: 1,
@@ -27,7 +30,7 @@ const Author = {
 const createAPI = () => {
   const app = express();
   app.use(express.json());
-  offer(app, offerService, commentService);
+  offer(app, offerService, commentService, authService);
   return app;
 };
 
@@ -192,6 +195,92 @@ describe(`When GET '/${PathName.OFFERS}/${Offer.WRONG_ID}'`, () => {
   });
 
   test(`response should be equal to ${Empty.OFFER}`, () => {
+    expect(response.body).toStrictEqual(Empty.OFFER);
+  });
+});
+
+
+describe(`When POST '/${PathName.OFFERS}'`, () => {
+  const app = createAPI();
+
+  let response;
+
+  const mockOffer = {
+    [`title`]: `Тестовый заголовок объявления`,
+    [`description`]: `Описательная часть объявления`,
+    [`category`]: [`1`, `3`, `4`],
+    [`sum`]: 2100,
+    [`type`]: `Куплю`,
+    [`offer_picture`]: `picture.jpg`,
+    [`created_date`]: moment(Date.now()).toISOString(),
+  };
+
+  beforeAll(async () => {
+    response = await request(app)
+      .post(`/${PathName.OFFERS}`)
+      .send(mockOffer);
+  });
+
+  test(`status code should be ${HttpCode.OK}, response should be the same as mockOffer`, () => {
+    expect(response.statusCode).toBe(HttpCode.OK);
+    expect(response.body).toStrictEqual(mockOffer);
+  });
+
+});
+
+
+describe(`When PUT '${PathName.OFFERS}/${Offer.RIGHT_ID}'`, () => {
+  const app = createAPI();
+
+  let response;
+
+  const mockOffer = {
+    [`title`]: `Тестовый заголовок объявления`,
+    [`description`]: `Описательная часть объявления`,
+    [`category`]: [`1`, `3`, `4`],
+    [`sum`]: 2100,
+    [`type`]: `Куплю`,
+    [`offer_picture`]: `picture.jpg`,
+    [`created_date`]: moment(Date.now()).toISOString(),
+  };
+
+  beforeAll(async () => {
+    response = await request(app)
+      .put(`/${PathName.OFFERS}/${Offer.RIGHT_ID}`)
+      .send(mockOffer);
+  });
+
+  test(`status code should be ${HttpCode.OK}, response should be the same as request object`, () => {
+    expect(response.statusCode).toBe(HttpCode.OK);
+    expect(response.body).toStrictEqual(mockOffer);
+  });
+});
+
+
+describe(`When PUT '${PathName.OFFERS}/${Offer.WRONG_ID}'`, () => {
+  const app = createAPI();
+
+  let response;
+
+  const mockOffer = {
+    [`title`]: `Тестовый заголовок объявления`,
+    [`description`]: `Описательная часть объявления`,
+    [`category`]: [`1`, `3`, `4`],
+    [`sum`]: 2100,
+    [`type`]: `Куплю`,
+    [`offer_picture`]: `picture.jpg`,
+    [`created_date`]: moment(Date.now()).toISOString(),
+  };
+
+  beforeAll(async () => {
+    response = await request(app)
+      .put(`/${PathName.OFFERS}/${Offer.WRONG_ID}`)
+      .send(mockOffer);
+  });
+
+  test(`status code should be ${HttpCode.BAD_REQUEST}, response should be ${Empty.OFFER}`, () => {
+
+    expect(response.statusCode).toBe(HttpCode.BAD_REQUEST);
     expect(response.body).toStrictEqual(Empty.OFFER);
   });
 });

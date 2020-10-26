@@ -1,5 +1,7 @@
 'use strict';
 
+const moment = require(`moment`);
+
 const {db, sequelize} = require(`./../../data/db`);
 const {Items} = require(`../constants.js`);
 
@@ -162,6 +164,63 @@ class OfferService {
         [`author_id`]: authorId,
       },
     });
+  }
+
+  async add(formData, authorId) {
+    const type = await this._database.Type.findOne({
+      where: {
+        name: formData[`type`]
+      },
+    });
+
+    const picture = await this._database.Picture.create({
+      type: `item`,
+      normal: formData[`offer_picture`],
+      double: formData[`offer_picture`],
+    });
+
+    const offer = await this._database.Offer.create({
+      [`title`]: formData[`title`],
+      [`description`]: formData[`description`],
+      [`sum`]: formData[`sum`],
+      [`created_date`]: moment(Date.now()).toISOString(),
+      [`author_id`]: authorId,
+      [`type_id`]: type[`id`],
+      [`picture_id`]: picture[`id`],
+    });
+
+    offer.setCategories(formData[`category`]);
+  }
+
+  async update(formData, offerId) {
+    const type = await this._database.Type.findOne({
+      where: {
+        name: formData[`type`]
+      },
+    });
+
+    const offer = await this._database.Offer.findByPk(offerId);
+
+    let picture = {id: offer[`picture_id`]};
+
+    if (formData[`offer_picture`]) {
+      picture = await this._database.Picture.create({
+        type: `item`,
+        normal: formData[`offer_picture`],
+        double: formData[`offer_picture`],
+      });
+    }
+
+    offer[`title`] = formData[`title`];
+    offer[`description`] = formData[`description`];
+    offer[`sum`] = formData[`sum`];
+    offer[`created_date`] = moment(Date.now()).toISOString();
+    offer[`type_id`] = type[`id`];
+    offer[`picture_id`] = picture[`id`];
+
+    offer.setCategories(formData[`category`]);
+
+    await offer.save();
   }
 }
 

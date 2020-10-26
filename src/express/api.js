@@ -42,18 +42,18 @@ class Api {
   }
 
   postOffer(data) {
-    return this._load(`/${PathName.OFFERS}/add`, {
+    return this._load(`/${PathName.OFFERS}`, {
       method: `POST`,
       data
     });
   }
 
-  // editOffer(data, offerId) {
-  //   return this._load(`/${PathName.OFFERS}/${offerId}`, {
-  //     method: `PUT`,
-  //     data
-  //   });
-  // }
+  editOffer(data, offerId) {
+    return this._load(`/${PathName.OFFERS}/${offerId}`, {
+      method: `PUT`,
+      data
+    });
+  }
 
   // deleteOffer(offerId) {
   //   return this._load(`/${PathName.OFFERS}/${offerId}}`, {

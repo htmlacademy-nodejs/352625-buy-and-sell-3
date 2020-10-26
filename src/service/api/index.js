@@ -21,7 +21,7 @@ const app = new Router();
   auth(app, new AuthService());
   category(app, new CategoryService());
   search(app, new SearchService());
-  offer(app, new OfferService(), new CommentService());
+  offer(app, new OfferService(), new CommentService(), new AuthService());
 })();
 
 module.exports = app;

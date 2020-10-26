@@ -1,15 +1,32 @@
 'use strict';
 
 const {Router} = require(`express`);
+const multer = require(`multer`);
+const path = require(`path`);
+const nanoid = require(`nanoid`);
 
 const {getHumanDate} = require(`./../utils.js`);
 const {render404Page, render500Page} = require(`./render.js`);
 const api = require(`../api.js`).getApi();
 const {getLogger} = require(`./../../service/logger.js`);
 
+const UPLOAD_DIR = `../upload/img/`;
+const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
+
 const logger = getLogger();
 
 const offersRouter = new Router();
+
+const storage = multer.diskStorage({
+  destination: uploadDirAbsolute,
+  filename: (req, file, cb) => {
+    const uniqueName = nanoid(10);
+    const extension = file.originalname.split(`.`).pop();
+    cb(null, `${uniqueName}.${extension}`);
+  }
+});
+
+const upload = multer({storage});
 
 offersRouter.get(
     `/add`,
@@ -33,10 +50,14 @@ offersRouter.get(
 
 offersRouter.post(
     `/add`,
-    (req, res) => {
+    upload.single(`offer_picture`),
+    async (req, res) => {
+      const {body, file} = req;
+      const offerData = body;
+      offerData[`offer_picture`] = file.filename;
+
       try {
-        // TODO не работает
-        api.postOffer(req.body);
+        await api.postOffer(offerData);
 
         res.redirect(`/my`);
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
@@ -91,6 +112,31 @@ offersRouter.get(
       } catch (error) {
         render404Page(req, res);
         logger.error(`Error occurs: ${error}`);
+      }
+    }
+);
+
+offersRouter.post(
+    `/edit/:offerId`,
+    upload.single(`offer_picture`),
+    async (req, res) => {
+      const {body, file} = req;
+      const offerData = body;
+      if (file) {
+        offerData[`offer_picture`] = file.filename;
+      }
+
+      try {
+        const offerId = parseInt(req.params.offerId, 10);
+
+        await api.editOffer(offerData, offerId);
+
+        res.redirect(`/offers/${offerId}`);
+        logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
+
+      } catch (error) {
+        logger.error(`Error occurs: ${error}`);
+        res.redirect(`/offers/edit/${req.params.offerId}`);
       }
     }
 );
