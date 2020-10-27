@@ -146,7 +146,7 @@ class OfferService {
       }, {
         model: this._database.Comment,
         as: `comments`,
-        attributes: [`text`],
+        attributes: [`id`, `text`],
 
         include: {
           model: this._database.Author,
@@ -229,7 +229,6 @@ class OfferService {
         id: offerId
       }
     });
-
   }
 }
 

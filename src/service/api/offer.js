@@ -11,6 +11,12 @@ const validateOffer = () => {
   return true;
 };
 
+const validateComment = () => {
+  // TODO: validating code is coming soon...
+  return true;
+};
+
+
 module.exports = (app, offerService, commentService, authService) => {
   const route = new Router();
 
@@ -187,6 +193,27 @@ module.exports = (app, offerService, commentService, authService) => {
         res.status(HttpCode.BAD_REQUEST).send(Empty.OFFER);
       }
 
+      logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
+
+    } catch (error) {
+      res.status(HttpCode.INTERNAL_SERVER_ERROR).json(`${error}`);
+      logger.error(`Error occurs: ${error}`);
+    }
+  });
+
+
+  route.post(`/:offerId/comments`, async (req, res) => {
+    try {
+      const offerId = parseInt(req.params.offerId, 10);
+      const auth = await authService.get();
+
+      if (validateComment() && auth.status && Number.isInteger(offerId)) {
+        await commentService.add(req.body, offerId, auth.user.id);
+        res.status(HttpCode.OK).send(req.body);
+
+      } else {
+        res.status(HttpCode.BAD_REQUEST).send(Empty.COMMENT);
+      }
       logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
     } catch (error) {

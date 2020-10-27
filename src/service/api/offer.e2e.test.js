@@ -286,6 +286,50 @@ describe(`When PUT '${PathName.OFFERS}/${Offer.WRONG_ID}'`, () => {
 });
 
 
+describe(`When POST '/${PathName.OFFERS}/${Offer.RIGHT_ID}/comments'`, () => {
+  const app = createAPI();
+
+  let response;
+
+  const mockComment = {
+    text: `Текст нового комментария`,
+  };
+
+  beforeAll(async () => {
+    response = await request(app)
+      .post(`/${PathName.OFFERS}/${Offer.RIGHT_ID}/comments`)
+      .send(mockComment);
+  });
+
+  test(`status code should be ${HttpCode.OK} and response should be the same as mockComment`, () => {
+    expect(response.statusCode).toBe(HttpCode.OK);
+    expect(response.body).toStrictEqual(mockComment);
+  });
+});
+
+
+describe(`When POST '/${PathName.OFFERS}/${Offer.WRONG_ID}/comments'`, () => {
+  const app = createAPI();
+
+  let response;
+
+  const mockComment = {
+    text: `Текст нового комментария`,
+  };
+
+  beforeAll(async () => {
+    response = await request(app)
+      .post(`/${PathName.OFFERS}/${Offer.WRONG_ID}/comments`)
+      .send(mockComment);
+  });
+
+  test(`status code should be ${HttpCode.BAD_REQUEST} and response should be equal to '${Empty.COMMENT}'`, () => {
+    expect(response.statusCode).toBe(HttpCode.BAD_REQUEST);
+    expect(response.body).toStrictEqual(Empty.COMMENT);
+  });
+});
+
+
 describe(`When DELETE '/${PathName.OFFERS}/${Offer.RIGHT_ID}'`, () => {
   const app = createAPI();
 

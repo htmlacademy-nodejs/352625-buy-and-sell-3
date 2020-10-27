@@ -14,6 +14,7 @@ const PathName = {
   CATEGORIES: `api/categories`,
   SEARCH: `api/search`,
   AUTH: `api/auth`,
+  COMMENTS: `api/comments`,
 };
 
 const Empty = {

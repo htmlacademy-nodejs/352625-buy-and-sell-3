@@ -88,4 +88,20 @@ myRouter.post(
 );
 
 
+myRouter.post(`/comments/delete/:commentId`, async (req, res) => {
+  try {
+    const commentId = parseInt(req.params.commentId, 10);
+
+    await api.deleteComment(commentId);
+
+    res.redirect(`/my/comments/`);
+    logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
+
+  } catch (error) {
+    logger.error(`Error occurs: ${error}`);
+    res.redirect(`/my/comments/`);
+  }
+});
+
+
 module.exports = myRouter;

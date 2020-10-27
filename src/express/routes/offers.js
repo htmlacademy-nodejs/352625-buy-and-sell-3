@@ -162,4 +162,23 @@ offersRouter.get(
     }
 );
 
+offersRouter.post(
+    `/:offerId/comments`,
+    async (req, res) => {
+      try {
+        const offerId = parseInt(req.params.offerId, 10);
+
+        await api.postComment(req.body, offerId);
+
+        res.redirect(`/offers/${offerId}`);
+        logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
+
+      } catch (error) {
+        logger.error(`Error occurs: ${error}`);
+
+        res.redirect(`/offers/${req.params.offerId}`);
+      }
+    }
+);
+
 module.exports = offersRouter;

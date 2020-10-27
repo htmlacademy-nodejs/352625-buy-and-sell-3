@@ -73,18 +73,18 @@ class Api {
     return this._load(`${PathName.OFFERS}/fresh`);
   }
 
-  // postComment(data, offerId) {
-  //   return this._load(`/${PathName.OFFERS}/${offerId}/comments`, {
-  //     method: `POST`,
-  //     data
-  //   });
-  // }
+  postComment(data, offerId) {
+    return this._load(`/${PathName.OFFERS}/${offerId}/comments`, {
+      method: `POST`,
+      data
+    });
+  }
 
-  // deleteComment(commentId) {
-  //   return this._load(`/${PathName.COMMENTS}/${commentId}}`, {
-  //     method: `DELETE`
-  //   });
-  // }
+  deleteComment(commentId) {
+    return this._load(`/${PathName.COMMENTS}/${commentId}}`, {
+      method: `DELETE`
+    });
+  }
 
   search(query) {
     return this._load(`/${PathName.SEARCH}`, {params: {query}});
