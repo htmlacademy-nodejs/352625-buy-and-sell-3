@@ -26,5 +26,6 @@ block content
                     p.ticket-card__price
                       span.js-sum= item.sum
                       | ₽
-                button.ticket-card__del.js-delete(type="button") Удалить
+                form(action=`/my/offers/delete/${item.id}` method="post")
+                  button.ticket-card__del(submit="button") Удалить
 

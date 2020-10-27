@@ -69,4 +69,23 @@ myRouter.get(
 );
 
 
+myRouter.post(
+    `/offers/delete/:offerId`,
+    async (req, res) => {
+      try {
+        const offerId = parseInt(req.params.offerId, 10);
+
+        await api.deleteOffer(offerId);
+
+        res.redirect(`/my/`);
+        logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
+
+      } catch (error) {
+        logger.error(`Error occurs: ${error}`);
+        res.redirect(`/my/`);
+      }
+    }
+);
+
+
 module.exports = myRouter;

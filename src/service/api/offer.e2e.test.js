@@ -284,3 +284,35 @@ describe(`When PUT '${PathName.OFFERS}/${Offer.WRONG_ID}'`, () => {
     expect(response.body).toStrictEqual(Empty.OFFER);
   });
 });
+
+
+describe(`When DELETE '/${PathName.OFFERS}/${Offer.RIGHT_ID}'`, () => {
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .delete(`/${PathName.OFFERS}/${Offer.RIGHT_ID}`);
+  });
+
+  test(`status code should be ${HttpCode.OK}`, () => {
+    expect(response.statusCode).toBe(HttpCode.OK);
+  });
+});
+
+
+describe(`When DELETE '/${PathName.OFFERS}/${Offer.WRONG_ID}'`, () => {
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .delete(`/${PathName.OFFERS}/${Offer.WRONG_ID}`);
+  });
+
+  test(`status code should be ${HttpCode.BAD_REQUEST}`, () => {
+    expect(response.statusCode).toBe(HttpCode.BAD_REQUEST);
+  });
+});

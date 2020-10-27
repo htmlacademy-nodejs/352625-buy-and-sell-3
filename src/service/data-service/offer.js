@@ -222,6 +222,15 @@ class OfferService {
 
     await offer.save();
   }
+
+  async delete(offerId) {
+    await this._database.Offer.destroy({
+      where: {
+        id: offerId
+      }
+    });
+
+  }
 }
 
 module.exports = OfferService;

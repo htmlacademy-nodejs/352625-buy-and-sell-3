@@ -55,11 +55,11 @@ class Api {
     });
   }
 
-  // deleteOffer(offerId) {
-  //   return this._load(`/${PathName.OFFERS}/${offerId}}`, {
-  //     method: `DELETE`
-  //   });
-  // }
+  deleteOffer(offerId) {
+    return this._load(`/${PathName.OFFERS}/${offerId}}`, {
+      method: `DELETE`
+    });
+  }
 
   getMyOffers(authorId) {
     return this._load(`/${PathName.OFFERS}/byAuthorId/${authorId}`);

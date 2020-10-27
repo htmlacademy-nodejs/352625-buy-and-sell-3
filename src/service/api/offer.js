@@ -168,5 +168,31 @@ module.exports = (app, offerService, commentService, authService) => {
     }
 
   });
+
+
+  route.delete(`/:offerId`, async (req, res) => {
+    try {
+      let data = null;
+      const offerId = parseInt(req.params.offerId, 10);
+
+      if (offerId) {
+        data = await offerService.findOne(offerId);
+      }
+
+      if (data) {
+        await offerService.delete(offerId);
+        res.status(HttpCode.OK).send(`Offer is deleted`);
+
+      } else {
+        res.status(HttpCode.BAD_REQUEST).send(Empty.OFFER);
+      }
+
+      logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
+
+    } catch (error) {
+      res.status(HttpCode.INTERNAL_SERVER_ERROR).json(`${error}`);
+      logger.error(`Error occurs: ${error}`);
+    }
+  });
 };
 
