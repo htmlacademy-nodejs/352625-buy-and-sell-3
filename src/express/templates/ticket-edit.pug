@@ -40,19 +40,12 @@ block content
                   label(for="price-field") Цена
                   span Обязательное поле
                 .form__switch.switch
-                  if offer.type.name === `Куплю`
-                    .switch__item
-                      input#buy-field.visually-hidden(type="radio" name="type" value="Куплю" checked="")
-                      label.switch__button(for="buy-field") Куплю
-                    .switch__item
-                      input#sell-field.visually-hidden(type="radio" name="type" value="Продам")
-                      label.switch__button(for="sell-field") Продам
-                  else
-                    .switch__item
-                      input#buy-field.visually-hidden(type="radio" name="type" value="Куплю")
-                      label.switch__button(for="buy-field") Куплю
-                    .switch__item
-                      input#sell-field.visually-hidden(type="radio" name="type" value="Продам" checked="")
-                      label.switch__button(for="sell-field") Продам
+                  .switch__item
+                    input#buy-field.visually-hidden(type="radio" name="type" value="Куплю" checked= offer.type.name === `Куплю` ? true : false)
+                    label.switch__button(for="buy-field") Куплю
+                  .switch__item
+                    input#sell-field.visually-hidden(type="radio" name="type" value="Продам" checked= offer.type.name === `Продам` ? true : false)
+                    label.switch__button(for="sell-field") Продам
+
             button.form__button.btn.btn--medium.js-button(type="submit") Сохранить
 
