@@ -129,7 +129,7 @@ class OfferService {
 
   async findAllByAuthorId(authorId) {
     return await this._database.Offer.findAll({
-      attributes: [`id`, `title`, `sum`],
+      attributes: [`id`, `title`, `sum`, `created_date`],
       include: [{
         model: this._database.Picture,
         as: `picture`,
@@ -146,7 +146,7 @@ class OfferService {
       }, {
         model: this._database.Comment,
         as: `comments`,
-        attributes: [`id`, `text`],
+        attributes: [`id`, `text`, `created_date`],
 
         include: {
           model: this._database.Author,
@@ -158,11 +158,16 @@ class OfferService {
             as: `avatar`,
             attributes: [`normal`, `double`],
           }
-        }
+        },
       }],
+
       where: {
         [`author_id`]: authorId,
       },
+      order: [
+        [`created_date`, `DESC`],
+        [{model: this._database.Comment, as: `comments`}, `created_date`, `DESC`]
+      ],
     });
   }
 
