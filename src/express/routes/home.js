@@ -2,7 +2,6 @@
 
 const {Router} = require(`express`);
 
-const {Items} = require(`../../service/constants.js`);
 const {render404Page} = require(`./render.js`);
 const api = require(`../api.js`).getApi();
 const {getLogger} = require(`./../../service/logger.js`);
