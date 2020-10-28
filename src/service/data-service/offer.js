@@ -65,7 +65,7 @@ class OfferService {
 
   async findFresh() {
     return await this._database.Offer.findAll({
-      attributes: [`id`, `title`, `created_date`, `sum`],
+      attributes: [`id`, `title`, `description`, `created_date`, `sum`],
 
       order: [
         [`created_date`, `desc`]
