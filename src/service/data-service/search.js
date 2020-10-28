@@ -15,7 +15,8 @@ class SearchService {
       limit: count,
       where: {
         title: {
-          [Op.like]: `%${typingData}%`,
+          // TODO Не разобрался как сделать 'case insensitive'
+          [Op.iLike]: `%${typingData}%`,
         }
       },
       attributes: [`id`, `title`, `description`, `sum`],
