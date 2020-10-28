@@ -19,8 +19,7 @@ homeRouter.get(
         const categories = await api.getCategories();
         const auth = await api.getAuth();
         const freshItems = await api.getFreshItems();
-        // TODO limit корректно не сработал, пришлось делать slice.
-        const mostDiscussedItems = [...(await api.getMostDiscussed())].slice(0, Items.MOST_DISCUSSED);
+        const mostDiscussedItems = await api.getMostDiscussed();
 
         res.render(`main`, {
           auth,

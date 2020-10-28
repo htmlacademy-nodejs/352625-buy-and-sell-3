@@ -52,8 +52,8 @@ block content
                 .ticket-card__info
                   span.ticket-card__label= item.type.name
                   .ticket-card__categories
-                    each category in item.categories
-                      a(href=`/offers/category/${category.id}`)= category.name
+                     each category in item.categories
+                       a(href=`/offers/category/${category.id}`)= category.name
                   .ticket-card__header
                     h3.ticket-card__title
                       a(href=`/offers/${item.id}`)= item.title

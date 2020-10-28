@@ -91,40 +91,54 @@ class OfferService {
   }
 
   async findMostDiscussed() {
-    return db.Offer.findAll({
+    const mostDiscussedItems = await this._database.Offer.findAll({
       attributes: {
-        include: [this._orm.fn(`count`, this._orm.col(`comments.id`)), `count`]
+        include: [[this._orm.fn(`count`, this._orm.col(`comments.id`)), `comments_count`]]
       },
 
       include: [{
-        model: db.Comment,
+        model: this._database.Comment,
         as: `comments`,
         attributes: [],
         duplicating: false,
       }, {
-        model: db.Picture,
+        model: this._database.Picture,
         as: `picture`,
         attributes: [`normal`, `double`],
       }, {
-        model: db.Category,
-        as: `categories`,
-        attributes: [`id`, `name`],
-        duplicating: false,
-        required: false,
-        through: {attributes: []},
-      }, {
-        model: db.Type,
+        model: this._database.Type,
         as: `type`,
         attributes: [`name`],
       }],
-      group: [`Offer.id`, `picture.id`, `categories.id`, `type.id`],
+      group: [`Offer.id`, `picture.id`, `type.id`],
 
       order: [
         [`count`, `desc`]
       ],
-      // TODO limit работает не корректно, стоит убрать из выборки 'model: db.Category', то все становится ok.
-      // limit: this._mostDiscussedCount,
+      limit: this._mostDiscussedCount,
     });
+
+    const offers = [];
+
+    for (const item of mostDiscussedItems) {
+      const offer = item.dataValues;
+      offer.categories = await this._database.Category.findAll({
+        attributes: [`id`, `name`],
+        include: {
+          model: this._database.Offer,
+          as: `offers`,
+          attributes: [],
+          duplicating: false,
+          where: {
+            id: item.dataValues.id
+          }
+        }
+      });
+
+      offers.push(offer);
+    }
+
+    return offers;
   }
 
   async findAllByAuthorId(authorId) {
