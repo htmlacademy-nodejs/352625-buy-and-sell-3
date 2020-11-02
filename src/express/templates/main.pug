@@ -13,7 +13,7 @@ block content
                 img(src=`/img/${category.picture.normal}` srcset=`/img/${category.picture.double} 2x` alt="Иконка категории")
               span.category-tile__label= category.name
                 |&#32;
-                span.category-tile__qty.js-qty= getOffersByCategory(offers, category).length
+                span.category-tile__qty.js-qty= category.offers.length
     section.tickets-list
       h2.visually-hidden Самые новые предложения
       .tickets-list__wrapper
@@ -26,9 +26,9 @@ block content
                 .ticket-card__img
                   img(src=`/img/${item.picture.normal}` srcset=`/img/${item.picture.double} 2x` alt="Изображение товара")
                 .ticket-card__info
-                  span.ticket-card__label= item.type
+                  span.ticket-card__label= item.type.name
                   .ticket-card__categories
-                    each category in item.category
+                    each category in item.categories
                       a(href=`/offers/category/${category.id}`)= category.name
                   .ticket-card__header
                     h3.ticket-card__title
@@ -50,10 +50,10 @@ block content
                 .ticket-card__img
                   img(src=`/img/${item.picture.normal}` srcset=`/img/${item.picture.double} 2x` alt="Изображение товара")
                 .ticket-card__info
-                  span.ticket-card__label= item.type
+                  span.ticket-card__label= item.type.name
                   .ticket-card__categories
-                    each category in item.category
-                      a(href=`/offers/category/${category.id}`)= category.name
+                     each category in item.categories
+                       a(href=`/offers/category/${category.id}`)= category.name
                   .ticket-card__header
                     h3.ticket-card__title
                       a(href=`/offers/${item.id}`)= item.title

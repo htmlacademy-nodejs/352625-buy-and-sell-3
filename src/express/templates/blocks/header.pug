@@ -13,5 +13,5 @@ header(class= auth.status ? `header header--logged` : `header`)
       .search__icon
       .search__close-btn
     a.header__avatar.avatar(href="/my")
-      img(src=`/img/${auth.user.avatar}.jpg` srcset=`/img/${auth.user.avatar}@2x.jpg 2x` alt="Аватар пользователя")
+      img(src=`/img/${auth.user.avatar.normal}` srcset=`/img/${auth.user.avatar.double} 2x` alt="Аватар пользователя")
     a.header__input(href="/register") Вход и регистрация

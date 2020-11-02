@@ -10,21 +10,22 @@ block content
           a.tickets-list__btn.btn.btn--big(href="/offers/add")
             span Новая публикация
         ul
-          each item in auth.userOffers
+          each item in myOffers
             li.tickets-list__item.js-card
               .ticket-card.ticket-card--color06
                 .ticket-card__img
                   img(src=`/img/${item.picture.normal}` srcset=`/img/${item.picture.double} 2x` alt="Изображение товара")
                 .ticket-card__info
-                  span.ticket-card__label= item.type
+                  span.ticket-card__label= item.type.name
                   .ticket-card__categories
-                    each category in item.category
+                    each category in item.categories
                       a(href=`/offers/category/${category.id}`)= category.name
                   .ticket-card__header
                     h3.ticket-card__title
-                      a(href=`/offers/${item.id}`)= item.title
+                      a(href=`/offers/edit/${item.id}`)= item.title
                     p.ticket-card__price
                       span.js-sum= item.sum
                       | ₽
-                button.ticket-card__del.js-delete(type="button") Удалить
+                form(action=`/my/offers/delete/${item.id}` method="post")
+                  button.ticket-card__del(submit="button") Удалить
 
