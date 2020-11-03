@@ -8,7 +8,7 @@ block content
       ul.categories-list__wrapper
         each category in categories
           li.categories-list__item
-            a.category-tile.category-tile--default(href=`/offers/category/${category.id}`)
+            a.category-tile.category-tile--default(href=`/offers/category/id=${category.id}&page=1`)
               span.category-tile__image
                 img(src=`/img/${category.picture.normal}` srcset=`/img/${category.picture.double} 2x` alt="Иконка категории")
               span.category-tile__label= category.name

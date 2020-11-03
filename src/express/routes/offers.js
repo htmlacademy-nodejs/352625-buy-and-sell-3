@@ -28,6 +28,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage});
 
+const getPageNumbers = (length) => {
+  const result = [];
+  let i = 1;
+  do {
+    result.push(i);
+    i++;
+  } while (i <= length);
+  return result;
+};
+
 offersRouter.get(
     `/add`,
     async (req, res) => {
@@ -71,19 +81,22 @@ offersRouter.post(
 );
 
 offersRouter.get(
-    `/category/:categoryId`,
+    `/category/id=:categoryId&page=:pageNumber`,
     async (req, res) => {
       try {
         const activeCategoryId = req.params.categoryId;
-        const activeCategory = await api.getCategory(activeCategoryId);
+        const pageNumber = req.params.pageNumber;
+        const {activeCategory, offers} = await api.getCategory(activeCategoryId, pageNumber);
         const categories = await api.getCategories();
         const auth = await api.getAuth();
+        const pageNumbers = getPageNumbers(offers.totalPages);
 
         res.render(`category`, {
           auth,
           categories,
           activeCategory,
-          activeCategoryId,
+          offers,
+          pageNumbers,
         });
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 

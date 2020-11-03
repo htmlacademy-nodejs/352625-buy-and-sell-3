@@ -9,7 +9,7 @@ block content
         each category in categories
           li.categories-list__item
             a(class= category.id === activeCategory.id ? `category-tile category-tile--active` : `category-tile`
-              href=`/offers/category/${category.id}`)
+              href=`/offers/category/id=${category.id}&page=1`)
               span.category-tile__image
                 img(src=`/img/${category.picture.normal}` srcset=`/img/${category.picture.double} 2x` alt="Иконка категории")
               span.category-tile__label= category.name
@@ -20,9 +20,9 @@ block content
       .tickets-list__wrapper
         .tickets-list__header
           p.tickets-list__title= activeCategory.name
-            b.js-qty= activeCategory.offers.length
+            b.js-qty= offers.length
         ul
-          each item in activeCategory.offers
+          each item in offers.items
             li.tickets-list__item
               .ticket-card.ticket-card--color06
                 .ticket-card__img
@@ -30,8 +30,8 @@ block content
                 .ticket-card__info
                   span.ticket-card__label= item.type.name
                   .ticket-card__categories
-                    each category in item.categories
-                      a(href=`/offers/category/${category.id}`)= category.name
+                    // each category in item.categories
+                    //   a(href=`/offers/category/${category.id}`)= category.name
                   .ticket-card__header
                     h3.ticket-card__title
                       a(href=`/offers/${item.id}`)= item.title
@@ -42,16 +42,10 @@ block content
                     p= item.description
         .tickets-list__pagination
           ul.pagination
-            li
-              a.active(href="#") 1
-            li
-              a(href="#") 2
-            li
-              a(href="#") 3
-            li
-              a(href="#") 4
-            li
-              a(href="#") 5
-            li
-              a(href="#") дальше
+            each item in pageNumbers
+              li
+                a(class= item === offers.currentPage ? "active" : ""
+                  href= item === offers.currentPage ? disabled : `/offers/category/id=${activeCategory.id}&page=${item}`
+                  )= item
+            a(href="#") дальше
 
