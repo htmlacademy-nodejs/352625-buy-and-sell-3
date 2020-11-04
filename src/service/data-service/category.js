@@ -1,11 +1,8 @@
 'use strict';
 
 const {db} = require(`./../../data/db`);
+const {Pagination} = require(`../constants.js`);
 
-const Pagination = {
-  SIZE: 4,
-  DEFAULT_PAGE: 1,
-};
 
 class CategoryService {
   constructor(database = db) {
@@ -37,7 +34,6 @@ class CategoryService {
       }
     });
 
-    // TODO добавить в каждый оффер его категории
     const offersByCategory = await this._database.Offer.findAndCountAll({
       attributes: [`id`, `title`, `description`, `created_date`, `sum`],
       distinct: true,
@@ -60,13 +56,34 @@ class CategoryService {
       }]
     });
 
+    const offers = [];
+
+    for (const item of offersByCategory.rows) {
+      const offer = item.dataValues;
+      offer.categories = await this._database.Category.findAll({
+        attributes: [`id`, `name`],
+        include: {
+          model: this._database.Offer,
+          as: `offers`,
+          attributes: [],
+          duplicating: false,
+          where: {
+            id: item.dataValues.id
+          }
+        }
+      });
+
+      offers.push(offer);
+    }
+
+
     return {
       activeCategory,
       offers: {
         totalItems: offersByCategory.count,
         totalPages: Math.ceil(offersByCategory.count / Pagination.SIZE),
         currentPage,
-        items: offersByCategory.rows,
+        items: offers,
       },
     };
   }

@@ -5,7 +5,7 @@ const multer = require(`multer`);
 const path = require(`path`);
 const nanoid = require(`nanoid`);
 
-const {getHumanDate} = require(`./../utils.js`);
+const {getHumanDate, getPageNumbers} = require(`./../utils.js`);
 const {render404Page, render500Page} = require(`./render.js`);
 const api = require(`../api.js`).getApi();
 const {getLogger} = require(`./../../service/logger.js`);
@@ -27,16 +27,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({storage});
-
-const getPageNumbers = (length) => {
-  const result = [];
-  let i = 1;
-  do {
-    result.push(i);
-    i++;
-  } while (i <= length);
-  return result;
-};
 
 offersRouter.get(
     `/add`,
@@ -86,6 +76,7 @@ offersRouter.get(
       try {
         const activeCategoryId = req.params.categoryId;
         const pageNumber = req.params.pageNumber;
+
         const {activeCategory, offers} = await api.getCategory(activeCategoryId, pageNumber);
         const categories = await api.getCategories();
         const auth = await api.getAuth();
