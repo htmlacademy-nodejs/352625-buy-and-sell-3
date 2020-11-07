@@ -15,6 +15,11 @@ const Category = {
   WRONG_ID: `wr0ng1d`,
 };
 
+const Page = {
+  RIGHT_ID: 1,
+  WRONG_ID: `wr0ng1d`,
+};
+
 const categoryService = new CategoryService(fakeDb);
 
 const createAPI = () => {
@@ -57,16 +62,16 @@ describe(`When GET '/${PathName.CATEGORIES}'`, () => {
 });
 
 
-describe(`When GET '/${PathName.CATEGORIES}/${Category.RIGHT_ID}'`, () => {
+describe(`When GET '/${PathName.CATEGORIES}/id=${Category.RIGHT_ID}&page=${Page.RIGHT_ID}'`, () => {
   const app = createAPI();
 
   let response;
   let result;
 
   beforeAll(async () => {
-    const data = await categoryService.findOne(Category.RIGHT_ID);
+    const data = await categoryService.findOne(Category.RIGHT_ID, Page.RIGHT_ID);
     response = await request(app)
-      .get(`/${PathName.CATEGORIES}/${Category.RIGHT_ID}`);
+      .get(`/${PathName.CATEGORIES}/id=${Category.RIGHT_ID}&page=${Page.RIGHT_ID}`);
     result = JSON.parse(JSON.stringify(data));
   });
 
@@ -80,14 +85,34 @@ describe(`When GET '/${PathName.CATEGORIES}/${Category.RIGHT_ID}'`, () => {
 });
 
 
-describe(`When GET '/${PathName.CATEGORIES}/${Category.WRONG_ID}'`, () => {
+describe(`When GET '/${PathName.CATEGORIES}/id=${Category.WRONG_ID}&page=${Page.RIGHT_ID}'`, () => {
   const app = createAPI();
 
   let response;
 
   beforeAll(async () => {
     response = await request(app)
-      .get(`/${PathName.CATEGORIES}/${Category.WRONG_ID}`);
+      .get(`/${PathName.CATEGORIES}/id=${Category.WRONG_ID}&page=${Page.RIGHT_ID}`);
+  });
+
+  test(`status code should be ${HttpCode.BAD_REQUEST}`, () => {
+    expect(response.statusCode).toBe(HttpCode.BAD_REQUEST);
+  });
+
+  test(`response should be equal to ${Empty.CATEGORY}`, () => {
+    expect(response.body).toStrictEqual(Empty.CATEGORY);
+  });
+});
+
+
+describe(`When GET '/${PathName.CATEGORIES}/id=${Category.RIGHT_ID}&page=${Page.WRONG_ID}'`, () => {
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .get(`/${PathName.CATEGORIES}/id=${Category.RIGHT_ID}&page=${Page.WRONG_ID}`);
   });
 
   test(`status code should be ${HttpCode.BAD_REQUEST}`, () => {

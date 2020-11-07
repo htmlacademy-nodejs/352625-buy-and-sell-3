@@ -29,8 +29,13 @@ const Empty = {
 };
 
 const Items = {
-  FRESH: 2,
-  MOST_DISCUSSED: 2,
+  FRESH: 8,
+  MOST_DISCUSSED: 8,
+};
+
+const Pagination = {
+  SIZE: 8,
+  DEFAULT_PAGE: 1,
 };
 
 const SEARCH_PARAM = `?query=`;
@@ -42,6 +47,7 @@ module.exports = {
   PathName,
   Empty,
   Items,
+  Pagination,
   SEARCH_PARAM,
   SEARCH_LIMIT,
 };

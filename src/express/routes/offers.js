@@ -5,7 +5,7 @@ const multer = require(`multer`);
 const path = require(`path`);
 const nanoid = require(`nanoid`);
 
-const {getHumanDate} = require(`./../utils.js`);
+const {getHumanDate, getPageNumbers} = require(`./../utils.js`);
 const {render404Page, render500Page} = require(`./render.js`);
 const api = require(`../api.js`).getApi();
 const {getLogger} = require(`./../../service/logger.js`);
@@ -71,19 +71,23 @@ offersRouter.post(
 );
 
 offersRouter.get(
-    `/category/:categoryId`,
+    `/category/id=:categoryId&page=:pageNumber`,
     async (req, res) => {
       try {
         const activeCategoryId = req.params.categoryId;
-        const activeCategory = await api.getCategory(activeCategoryId);
+        const pageNumber = req.params.pageNumber;
+
+        const {activeCategory, offers} = await api.getCategory(activeCategoryId, pageNumber);
         const categories = await api.getCategories();
         const auth = await api.getAuth();
+        const pageNumbers = getPageNumbers(offers.totalPages);
 
         res.render(`category`, {
           auth,
           categories,
           activeCategory,
-          activeCategoryId,
+          offers,
+          pageNumbers,
         });
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
