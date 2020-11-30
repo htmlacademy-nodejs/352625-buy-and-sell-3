@@ -2,9 +2,8 @@
 
 const {Router} = require(`express`);
 const {HttpCode, PathName, Empty} = require(`../constants.js`);
-const {getLogger} = require(`../../service/logger.js`);
 
-const logger = getLogger();
+const {tryToResponse} = require(`../middlewares`);
 
 
 module.exports = (app, searchService) => {
@@ -12,22 +11,19 @@ module.exports = (app, searchService) => {
 
   app.use(`/${PathName.SEARCH}`, route);
 
-  route.get(`/`, async (req, res) => {
-    try {
-      const typingData = req.query.query;
-      let data = await searchService.findSome(typingData);
+  route.get(
+      `/`,
+      async (req, res, next) => {
+        const typingData = req.query.query;
+        res.body = await searchService.findSome(typingData);
 
-      if (typingData === ``) {
-        data = Empty.SEARCH;
-      }
+        if (typingData === ``) {
+          res.body = Empty.SEARCH;
+        }
 
-      res.status(HttpCode.OK).json(data);
-      logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
-
-    } catch (error) {
-      res.status(HttpCode.INTERNAL_SERVER_ERROR).json(`${error}`);
-      logger.error(`Error occurs: ${error}`);
-    }
-  });
+        next();
+      },
+      tryToResponse(HttpCode.OK)
+  );
 };
 

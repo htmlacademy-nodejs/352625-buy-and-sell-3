@@ -1,6 +1,7 @@
 'use strict';
 
 const {db} = require(`./../../data/db`);
+const {Empty} = require(`../constants.js`);
 
 
 class AuthService {
@@ -9,10 +10,11 @@ class AuthService {
   }
 
   async get() {
-    const authData = await this._database.Auth.findOne({
+    let result = await this._database.Auth.findOne({
       where: {
         [`is_auth`]: true
       },
+      attributes: [[`is_auth`, `status`]],
       include: {
         model: this._database.Author,
         as: `user`,
@@ -24,16 +26,8 @@ class AuthService {
       },
     });
 
-    let result = {
-      status: false,
-      user: null,
-    };
-
-    if (authData) {
-      result = {
-        status: authData[`is_auth`],
-        user: authData[`user`],
-      };
+    if (!result) {
+      result = Empty.AUTH;
     }
 
     return result;

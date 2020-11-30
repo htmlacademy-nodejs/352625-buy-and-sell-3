@@ -4,15 +4,17 @@ const express = require(`express`);
 const request = require(`supertest`);
 
 const comment = require(`./comment.js`);
-const CommentService = require(`../data-service/comment.js`);
+const {CommentService, AuthService} = require(`../data-service`);
 
 const {HttpCode, PathName, Empty} = require(`../constants.js`);
 const mocks = require(`../../data/db/fake/mocks.js`);
 const {fakeDb, initDb, dropDb, fakeSequelize} = require(`../../data/db/fake`);
+const {loginByAuthorId, logoutByAuthorId} = require(`./test-utils.js`);
 
 const Comment = {
   RIGHT_ID: 1,
   WRONG_ID: `wr0ng1d`,
+  NON_EXIST_ID: 123456789,
 };
 
 const Offer = {
@@ -20,12 +22,17 @@ const Offer = {
   WRONG_ID: `wr0ngOffer1d`,
 };
 
+const Author = {
+  RIGHT_ID: 1,
+};
+
 const commentService = new CommentService(fakeDb);
+const authService = new AuthService(fakeDb);
 
 const createAPI = () => {
   const app = express();
   app.use(express.json());
-  comment(app, commentService);
+  comment(app, commentService, authService);
   return app;
 };
 
@@ -148,7 +155,7 @@ describe(`When GET '/${PathName.COMMENTS}/byOfferId/${Offer.WRONG_ID}'`, () => {
 });
 
 
-describe(`When DELETE '/${PathName.COMMENTS}/${Comment.RIGHT_ID}'`, () => {
+describe(`When DELETE '/${PathName.COMMENTS}/${Comment.RIGHT_ID}' in logout mode`, () => {
   const app = createAPI();
 
   let response;
@@ -158,14 +165,92 @@ describe(`When DELETE '/${PathName.COMMENTS}/${Comment.RIGHT_ID}'`, () => {
       .delete(`/${PathName.COMMENTS}/${Comment.RIGHT_ID}`);
   });
 
-  test(`status code should be ${HttpCode.OK} and response.text is 'Comment is deleted'`, () => {
-    expect(response.statusCode).toBe(HttpCode.OK);
-    expect(response.text).toBe(`Comment is deleted`);
+  test(`status code should be ${HttpCode.UNAUTHORIZED}`, () => {
+    expect(response.statusCode).toBe(HttpCode.UNAUTHORIZED);
+  });
+
+  test(`Response should be 'Unauthorized access'`, () => {
+    expect(response.body).toBe(`Unauthorized access`);
   });
 });
 
 
-describe(`When DELETE '/${PathName.COMMENTS}/${Comment.WRONG_ID}'`, () => {
+describe(`When DELETE '/${PathName.COMMENTS}/${Comment.RIGHT_ID}' in login mode`, () => {
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    await loginByAuthorId(Author.RIGHT_ID, fakeDb);
+    response = await request(app)
+      .delete(`/${PathName.COMMENTS}/${Comment.RIGHT_ID}`);
+  });
+
+  afterAll(async () => {
+    await logoutByAuthorId(Author.RIGHT_ID, fakeDb);
+  });
+
+  test(`status code should be ${HttpCode.OK}`, () => {
+    expect(response.statusCode).toBe(HttpCode.OK);
+  });
+
+  test(`Response should be 'Comment is deleted'`, () => {
+    expect(response.body).toBe(`Comment is deleted`);
+  });
+});
+
+
+describe(`When DELETE '/${PathName.COMMENTS}/${Comment.WRONG_ID}' in login mode`, () => {
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    await loginByAuthorId(Author.RIGHT_ID, fakeDb);
+    response = await request(app)
+      .delete(`/${PathName.COMMENTS}/${Comment.WRONG_ID}`);
+  });
+
+  afterAll(async () => {
+    await logoutByAuthorId(Author.RIGHT_ID, fakeDb);
+  });
+
+  test(`status code should be ${HttpCode.BAD_REQUEST}`, () => {
+    expect(response.statusCode).toBe(HttpCode.BAD_REQUEST);
+  });
+
+  test(`Response should be 'Incorrect id'`, () => {
+    expect(response.body).toBe(`Incorrect id`);
+  });
+});
+
+
+describe(`When DELETE '/${PathName.COMMENTS}/${Comment.NON_EXIST_ID}' in login mode`, () => {
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    await loginByAuthorId(Author.RIGHT_ID, fakeDb);
+    response = await request(app)
+      .delete(`/${PathName.COMMENTS}/${Comment.NON_EXIST_ID}`);
+  });
+
+  afterAll(async () => {
+    await logoutByAuthorId(Author.RIGHT_ID, fakeDb);
+  });
+
+  test(`status code should be ${HttpCode.BAD_REQUEST}`, () => {
+    expect(response.statusCode).toBe(HttpCode.BAD_REQUEST);
+  });
+
+  test(`Response should be 'Data is not exist'`, () => {
+    expect(response.body).toBe(`Data is not exist`);
+  });
+});
+
+
+describe(`When DELETE '/${PathName.COMMENTS}/${Comment.WRONG_ID}' in logout mode`, () => {
   const app = createAPI();
 
   let response;
@@ -175,8 +260,11 @@ describe(`When DELETE '/${PathName.COMMENTS}/${Comment.WRONG_ID}'`, () => {
       .delete(`/${PathName.COMMENTS}/${Comment.WRONG_ID}`);
   });
 
-  test(`status code should be ${HttpCode.BAD_REQUEST} and response.text is 'Comment doesn't exist'`, () => {
-    expect(response.statusCode).toBe(HttpCode.BAD_REQUEST);
-    expect(response.text).toBe(`Comment doesn't exist`);
+  test(`status code should be ${HttpCode.UNAUTHORIZED}`, () => {
+    expect(response.statusCode).toBe(HttpCode.UNAUTHORIZED);
+  });
+
+  test(`Response should be 'Unauthorized access'`, () => {
+    expect(response.body).toBe(`Unauthorized access`);
   });
 });
