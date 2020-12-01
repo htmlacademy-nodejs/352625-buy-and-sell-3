@@ -12,6 +12,7 @@ const {
   isExist,
 } = require(`../middlewares`);
 
+const offerSchema = require(`../schemas/offer.js`);
 
 module.exports = (app, offerService, commentService, authService) => {
   const route = new Router();
@@ -84,7 +85,7 @@ module.exports = (app, offerService, commentService, authService) => {
   route.post(
       `/`,
       isAuth(authService.get.bind(authService)),
-      validateOffer(),
+      validateOffer(offerSchema),
       async (req, res, next) => {
         await offerService.add(req.body, res.auth.user.id);
         res.body = `Offer is created`;
@@ -99,6 +100,7 @@ module.exports = (app, offerService, commentService, authService) => {
       isAuth(authService.get.bind(authService)),
       passProperParam(`offerId`, `Incorrect id`),
       isExist(offerService.findOne.bind(offerService), `offerId`),
+      validateOffer(offerSchema),
       async (req, res, next) => {
         await offerService.update(req.body, req.params[`offerId`]);
         res.body = `Offer is changed`;

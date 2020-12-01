@@ -15,6 +15,8 @@ const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 
 const logger = getLogger();
 
+const checkApiReply = require(`../middlewares/check-api-reply.js`);
+
 const offersRouter = new Router();
 
 const storage = multer.diskStorage({
@@ -30,14 +32,17 @@ const upload = multer({storage});
 
 offersRouter.get(
     `/add`,
+    checkApiReply(),
     async (req, res) => {
       try {
         const auth = await api.getAuth();
         const categories = await api.getCategories();
 
-        res.render(`new-ticket`, {
+        res.status(req.apiStatus).render(`new-ticket`, {
           auth,
           categories,
+          data: req.apiData,
+          errors: req.apiErrors,
         });
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
@@ -53,19 +58,19 @@ offersRouter.post(
     upload.single(`offer_picture`),
     async (req, res) => {
       const {body, file} = req;
-      const offerData = body;
-      offerData[`offer_picture`] = file.filename;
 
+      if (file) {
+        body[`offer_picture`] = file.filename;
+      }
       try {
-        await api.postOffer(offerData);
+        await api.postOffer(req.body);
 
         res.redirect(`/my`);
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
       } catch (error) {
+        res.redirect(`/offers/add?data=${JSON.stringify(error.response.data)}`);
         logger.error(`Error occurs: ${error}`);
-
-        res.redirect(`/offers/add`);
       }
     }
 );
@@ -99,7 +104,13 @@ offersRouter.get(
 );
 
 offersRouter.get(
+    `/category/:categoryId`,
+    (req, res) => res.redirect(`/offers/category/id=${req.params.categoryId}&page=1`)
+);
+
+offersRouter.get(
     `/edit/:offerId`,
+    checkApiReply(),
     async (req, res) => {
       try {
         const categories = await api.getCategories();
@@ -110,6 +121,8 @@ offersRouter.get(
           auth,
           offer,
           categories,
+          data: req.apiData,
+          errors: req.apiErrors,
         });
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
@@ -125,22 +138,20 @@ offersRouter.post(
     upload.single(`offer_picture`),
     async (req, res) => {
       const {body, file} = req;
-      const offerData = body;
-      if (file) {
-        offerData[`offer_picture`] = file.filename;
-      }
 
+      if (file) {
+        body[`offer_picture`] = file.filename;
+      }
       try {
         const offerId = parseInt(req.params.offerId, 10);
-
-        await api.editOffer(offerData, offerId);
+        await api.editOffer(req.body, offerId);
 
         res.redirect(`/offers/${offerId}`);
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
       } catch (error) {
+        res.redirect(`/offers/edit/${req.params.offerId}?data=${JSON.stringify(error.response.data)}`);
         logger.error(`Error occurs: ${error}`);
-        res.redirect(`/offers/edit/${req.params.offerId}`);
       }
     }
 );

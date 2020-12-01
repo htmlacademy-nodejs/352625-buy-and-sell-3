@@ -8,7 +8,8 @@ block content
         h1.visually-hidden Карточка объявления
         .ticket__content
           .ticket__img
-            img(src=`/img/${offer.picture.normal}` srcset=`/img/${offer.picture.double} 2x` alt="Изображение товара")
+            if offer.picture
+              img(src=`/img/${offer.picture.normal}` srcset=`/img/${offer.picture.double} 2x` alt="Изображение товара")
           .ticket__info
             h2.ticket__title= offer.title
             .ticket__header

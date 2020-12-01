@@ -222,19 +222,18 @@ describe(`When GET '/${PathName.OFFERS}/${Offer.NON_EXIST_ID}'`, () => {
 });
 
 
-describe(`When POST '/${PathName.OFFERS}' in login mode`, () => {
+describe(`When POST valid data '/${PathName.OFFERS}' in login mode`, () => {
   const app = createAPI();
 
   let response;
 
   const mockOffer = {
-    [`title`]: `Тестовый заголовок объявления`,
-    [`description`]: `Описательная часть объявления`,
-    [`category`]: [`1`, `3`, `4`],
+    [`title`]: `Валидный заголовок объявления`,
+    [`description`]: `Описательная часть объявления должна быть не менее 50 символов`,
+    [`categories`]: [1, 3, 4],
     [`sum`]: 2100,
     [`type`]: `Куплю`,
     [`offer_picture`]: `picture.jpg`,
-    [`created_date`]: moment(Date.now()).toISOString(),
   };
 
   beforeAll(async () => {
@@ -258,6 +257,65 @@ describe(`When POST '/${PathName.OFFERS}' in login mode`, () => {
 });
 
 
+describe(`When POST invalid data '/${PathName.OFFERS}' in login mode`, () => {
+  const app = createAPI();
+
+  let response;
+
+  const mockOffer = {
+    [`title`]: `Заголовок`,
+    [`description`]: `Невалидное описание`,
+    [`categories`]: [],
+    [`sum`]: 10,
+    [`type`]: `Куплю`,
+    [`offer_picture`]: `picture.jpg`,
+  };
+
+  const expectedReply = {
+    data: mockOffer,
+    errors: [
+      {
+        label: `title`,
+        message: `Длина должна быть не менее 10 символов`
+      },
+      {
+        label: `description`,
+        message: `Длина должна быть не менее 50 символов`
+      },
+      {
+        label: `categories`,
+        message: `Выберите хотя бы одну категорию`
+      },
+      {
+        label: `sum`,
+        message: `Стоимость должна быть не менее 100`
+      }
+    ],
+    status: HttpCode.BAD_REQUEST
+  };
+
+
+  beforeAll(async () => {
+    await loginByAuthorId(Author.RIGHT_ID, fakeDb);
+    response = await request(app)
+      .post(`/${PathName.OFFERS}`)
+      .send(mockOffer);
+  });
+
+  afterAll(async () => {
+    await logoutByAuthorId(Author.RIGHT_ID, fakeDb);
+  });
+
+  test(`status code should be ${HttpCode.BAD_REQUEST}`, () => {
+    expect(response.statusCode).toBe(HttpCode.BAD_REQUEST);
+  });
+
+  test(`Response should be consist object with special structure`, () => {
+    expect(response.body).toStrictEqual(expectedReply);
+  });
+});
+
+
 describe(`When POST '/${PathName.OFFERS}' in logout mode`, () => {
   const app = createAPI();
 
@@ -266,7 +324,7 @@ describe(`When POST '/${PathName.OFFERS}' in logout mode`, () => {
   const mockOffer = {
     [`title`]: `Тестовый заголовок объявления`,
     [`description`]: `Описательная часть объявления`,
-    [`category`]: [`1`, `3`, `4`],
+    [`categories`]: [1, 3, 4],
     [`sum`]: 2100,
     [`type`]: `Куплю`,
     [`offer_picture`]: `picture.jpg`,
@@ -289,19 +347,18 @@ describe(`When POST '/${PathName.OFFERS}' in logout mode`, () => {
 });
 
 
-describe(`When PUT '${PathName.OFFERS}/${Offer.RIGHT_ID} in login mode'`, () => {
+describe(`When PUT valid '${PathName.OFFERS}/${Offer.RIGHT_ID} in login mode'`, () => {
   const app = createAPI();
 
   let response;
 
   const mockOffer = {
-    [`title`]: `Тестовый заголовок объявления`,
-    [`description`]: `Описательная часть объявления`,
-    [`category`]: [`1`, `3`, `4`],
+    [`title`]: `Валидный заголовок объявления`,
+    [`description`]: `Описательная часть объявления должна быть не менее 50 символов`,
+    [`categories`]: [1, 3, 4],
     [`sum`]: 2100,
     [`type`]: `Куплю`,
     [`offer_picture`]: `picture.jpg`,
-    [`created_date`]: moment(Date.now()).toISOString(),
   };
 
   beforeAll(async () => {
@@ -321,6 +378,65 @@ describe(`When PUT '${PathName.OFFERS}/${Offer.RIGHT_ID} in login mode'`, () => 
 
   test(`Response should be 'Offer is changed'`, () => {
     expect(response.body).toBe(`Offer is changed`);
+  });
+
+});
+
+
+describe(`When PUT invalid '${PathName.OFFERS}/${Offer.RIGHT_ID} in login mode'`, () => {
+  const app = createAPI();
+
+  let response;
+
+  const mockOffer = {
+    [`title`]: `Заголовок`,
+    [`description`]: `Невалидное описание`,
+    [`categories`]: [],
+    [`sum`]: 10,
+    [`type`]: `Куплю`,
+    [`offer_picture`]: `picture.jpg`,
+  };
+
+  const expectedReply = {
+    data: mockOffer,
+    errors: [
+      {
+        label: `title`,
+        message: `Длина должна быть не менее 10 символов`
+      },
+      {
+        label: `description`,
+        message: `Длина должна быть не менее 50 символов`
+      },
+      {
+        label: `categories`,
+        message: `Выберите хотя бы одну категорию`
+      },
+      {
+        label: `sum`,
+        message: `Стоимость должна быть не менее 100`
+      }
+    ],
+    status: HttpCode.BAD_REQUEST
+  };
+
+  beforeAll(async () => {
+    await loginByAuthorId(Author.RIGHT_ID, fakeDb);
+    response = await request(app)
+      .put(`/${PathName.OFFERS}/${Offer.RIGHT_ID}`)
+      .send(mockOffer);
+  });
+
+  afterAll(async () => {
+    await logoutByAuthorId(Author.RIGHT_ID, fakeDb);
+  });
+
+  test(`status code should be ${HttpCode.BAD_REQUEST}`, () => {
+    expect(response.statusCode).toBe(HttpCode.BAD_REQUEST);
+  });
+
+  test(`Response should be the object with special structure`, () => {
+    expect(response.body).toStrictEqual(expectedReply);
   });
 
 });
