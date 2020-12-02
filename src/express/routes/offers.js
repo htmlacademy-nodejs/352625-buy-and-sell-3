@@ -1,34 +1,17 @@
 'use strict';
 
 const {Router} = require(`express`);
-const multer = require(`multer`);
-const path = require(`path`);
-const nanoid = require(`nanoid`);
 
 const {getHumanDate, getPageNumbers} = require(`./../utils.js`);
 const {render404Page, render500Page} = require(`./render.js`);
 const api = require(`../api.js`).getApi();
 const {getLogger} = require(`./../../service/logger.js`);
 
-const UPLOAD_DIR = `../upload/img/`;
-const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
-
 const logger = getLogger();
 
-const checkApiReply = require(`../middlewares/check-api-reply.js`);
+const {checkApiReply, uploadFile, saveFileNameToBody} = require(`../middlewares/`);
 
 const offersRouter = new Router();
-
-const storage = multer.diskStorage({
-  destination: uploadDirAbsolute,
-  filename: (req, file, cb) => {
-    const uniqueName = nanoid(10);
-    const extension = file.originalname.split(`.`).pop();
-    cb(null, `${uniqueName}.${extension}`);
-  }
-});
-
-const upload = multer({storage});
 
 offersRouter.get(
     `/add`,
@@ -55,13 +38,9 @@ offersRouter.get(
 
 offersRouter.post(
     `/add`,
-    upload.single(`offer_picture`),
+    uploadFile.single(`offer_picture`),
+    saveFileNameToBody(`offer_picture`),
     async (req, res) => {
-      const {body, file} = req;
-
-      if (file) {
-        body[`offer_picture`] = file.filename;
-      }
       try {
         await api.postOffer(req.body);
 
@@ -79,10 +58,7 @@ offersRouter.get(
     `/category/id=:categoryId&page=:pageNumber`,
     async (req, res) => {
       try {
-        const activeCategoryId = req.params.categoryId;
-        const pageNumber = req.params.pageNumber;
-
-        const {activeCategory, offers} = await api.getCategory(activeCategoryId, pageNumber);
+        const {activeCategory, offers} = await api.getCategory(req.params.categoryId, req.params.pageNumber);
         const categories = await api.getCategories();
         const auth = await api.getAuth();
         const pageNumbers = getPageNumbers(offers.totalPages);
@@ -135,18 +111,13 @@ offersRouter.get(
 
 offersRouter.post(
     `/edit/:offerId`,
-    upload.single(`offer_picture`),
+    uploadFile.single(`offer_picture`),
+    saveFileNameToBody(`offer_picture`),
     async (req, res) => {
-      const {body, file} = req;
-
-      if (file) {
-        body[`offer_picture`] = file.filename;
-      }
       try {
-        const offerId = parseInt(req.params.offerId, 10);
         await api.editOffer(req.body, offerId);
 
-        res.redirect(`/offers/${offerId}`);
+        res.redirect(`/offers/${req.params.offerId}`);
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
       } catch (error) {
@@ -184,11 +155,9 @@ offersRouter.post(
     `/:offerId/comments`,
     async (req, res) => {
       try {
-        const offerId = parseInt(req.params.offerId, 10);
+        await api.postComment(req.body, req.params.offerId);
 
-        await api.postComment(req.body, offerId);
-
-        res.redirect(`/offers/${offerId}`);
+        res.redirect(`/offers/${req.params.offerId}`);
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
       } catch (error) {
