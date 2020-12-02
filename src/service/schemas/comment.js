@@ -2,10 +2,15 @@
 
 const Joi = require(`joi`);
 
+const Text = {
+  MIN: 20,
+  MAX: 150,
+};
+
 module.exports = Joi.object({
   text: Joi.string()
-    .min(20)
-    .max(150)
+    .min(Text.MIN)
+    .max(Text.MAX)
     .required()
     .empty(``)
     .messages({

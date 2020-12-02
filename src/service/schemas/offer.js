@@ -2,10 +2,33 @@
 
 const Joi = require(`joi`);
 
+const Title = {
+  MIN: 10,
+  MAX: 100,
+};
+
+const Description = {
+  MIN: 50,
+  MAX: 1000,
+};
+
+const Categories = {
+  MIN: 1,
+};
+
+const Sum = {
+  MIN: 100,
+};
+
+const Type = {
+  BUY: `Куплю`,
+  SELL: `Продам`,
+};
+
 module.exports = Joi.object({
   title: Joi.string()
-    .min(10)
-    .max(100)
+    .min(Title.MIN)
+    .max(Title.MAX)
     .required()
     .messages({
       'string.min': `Длина должна быть не менее {#limit} символов`,
@@ -14,8 +37,8 @@ module.exports = Joi.object({
     }),
 
   description: Joi.string()
-    .min(50)
-    .max(1000)
+    .min(Description.MIN)
+    .max(Description.MAX)
     .required()
     .messages({
       'string.min': `Длина должна быть не менее {#limit} символов`,
@@ -25,7 +48,7 @@ module.exports = Joi.object({
 
   categories: Joi.array()
     .items(Joi.number().integer())
-    .min(1)
+    .min(Categories.MIN)
     .required()
     .messages({
       'array.min': `Выберите хотя бы одну категорию`,
@@ -33,7 +56,7 @@ module.exports = Joi.object({
     }),
 
   sum: Joi.number()
-    .min(100)
+    .min(Sum.MIN)
     .required()
     .messages({
       'number.min': `Стоимость должна быть не менее {#limit}`,
@@ -41,7 +64,7 @@ module.exports = Joi.object({
     }),
 
   type: Joi.string()
-    .valid(`Куплю`, `Продам`)
+    .valid(Type.BUY, Type.SELL)
     .required()
     .messages({
       'any.only': `Невалидное значение`,
