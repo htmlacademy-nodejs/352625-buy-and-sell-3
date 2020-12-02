@@ -42,7 +42,7 @@ describe(`When GET '${PathName.SEARCH}${SEARCH_PARAM}${RIGHT_SEARCH_URI}'`, () =
   const result = [{
     categories: [
       {id: 1, name: `Книги`}, {id: 2, name: `Разное`}, {id: 3, name: `Посуда`}
-      ],
+    ],
     description: `Если найдёте дешевле — сброшу цену. Таких предложений больше нет!`,
     id: 2,
     picture: {

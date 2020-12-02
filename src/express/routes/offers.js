@@ -9,20 +9,20 @@ const {getLogger} = require(`./../../service/logger.js`);
 
 const logger = getLogger();
 
-const {checkApiReply, uploadFile, saveFileNameToBody} = require(`../middlewares/`);
+const {checkApiReply, uploadFile, saveFileNameToBody, isAuth} = require(`../middlewares`);
 
 const offersRouter = new Router();
 
 offersRouter.get(
     `/add`,
+    isAuth(api.getAuth.bind(api)),
     checkApiReply(),
     async (req, res) => {
       try {
-        const auth = await api.getAuth();
         const categories = await api.getCategories();
 
         res.status(req.apiStatus).render(`new-ticket`, {
-          auth,
+          auth: res.auth,
           categories,
           data: req.apiData,
           errors: req.apiErrors,
@@ -38,6 +38,7 @@ offersRouter.get(
 
 offersRouter.post(
     `/add`,
+    isAuth(api.getAuth.bind(api)),
     uploadFile.single(`offer_picture`),
     saveFileNameToBody(`offer_picture`),
     async (req, res) => {
@@ -86,15 +87,15 @@ offersRouter.get(
 
 offersRouter.get(
     `/edit/:offerId`,
+    isAuth(api.getAuth.bind(api)),
     checkApiReply(),
     async (req, res) => {
       try {
         const categories = await api.getCategories();
         const offer = await api.getOffer(req.params.offerId);
-        const auth = await api.getAuth();
 
         res.status(req.apiStatus).render(`ticket-edit`, {
-          auth,
+          auth: res.auth,
           offer,
           categories,
           data: req.apiData,
@@ -111,11 +112,12 @@ offersRouter.get(
 
 offersRouter.post(
     `/edit/:offerId`,
+    isAuth(api.getAuth.bind(api)),
     uploadFile.single(`offer_picture`),
     saveFileNameToBody(`offer_picture`),
     async (req, res) => {
       try {
-        await api.editOffer(req.body, offerId);
+        await api.editOffer(req.body, req.params.offerId);
 
         res.redirect(`/offers/${req.params.offerId}`);
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
@@ -153,6 +155,7 @@ offersRouter.get(
 
 offersRouter.post(
     `/:offerId/comments`,
+    isAuth(api.getAuth.bind(api)),
     async (req, res) => {
       try {
         await api.postComment(req.body, req.params.offerId);
