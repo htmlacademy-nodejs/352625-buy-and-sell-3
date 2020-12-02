@@ -42,7 +42,8 @@ block content
             form.form.comment-form(action=`/offers/${offer.id}/comments` method="post")
               .comment-form__header
                 a.comment-form__avatar.avatar(href="/my")
-                  img(src=`/img/${auth.user.avatar.normal}` srcset=`/img/${auth.user.avatar.double} 2x` alt="Аватар пользователя")
+                  if auth.user
+                    img(src=`/img/${auth.user.avatar.normal}` srcset=`/img/${auth.user.avatar.double} 2x` alt="Аватар пользователя")
                 p.comment-form__author Вам слово
               .comment-form__field
                 .form__field
