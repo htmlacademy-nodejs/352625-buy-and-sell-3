@@ -13,6 +13,7 @@ const {
 } = require(`../middlewares`);
 
 const offerSchema = require(`../schemas/offer.js`);
+const commentSchema = require(`../schemas/comment.js`);
 
 module.exports = (app, offerService, commentService, authService) => {
   const route = new Router();
@@ -129,7 +130,7 @@ module.exports = (app, offerService, commentService, authService) => {
       isAuth(authService.get.bind(authService)),
       passProperParam(`offerId`, `Incorrect id`),
       isExist(offerService.findOne.bind(offerService), `offerId`),
-      validateComment(),
+      validateComment(commentSchema),
       async (req, res, next) => {
         await commentService.add(req.body, req.params[`offerId`], res.auth.user.id);
         res.body = `Comment is created`;

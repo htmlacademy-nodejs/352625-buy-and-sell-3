@@ -73,7 +73,7 @@ Content-Type: application/json
 }
 
 
-### Update existing offer
+### Update existing offer (valid data)
 ### You should be in login mode
 ### Response: 201 "Offer is changed"
 PUT http://localhost:3000/api/offers/1
@@ -81,12 +81,27 @@ Content-Type: application/json
 
 {
   "title": "Тестовый заголовок объявления",
-  "description": "Описательная часть объявления",
-  "category": ["1", "3", "4"],
+  "description": "Описательная часть объявления должна быть не менее 50 символов",
+  "categories": [1, 3, 4],
   "sum": 2100,
   "type": "Куплю",
-  "offer_picture": "picture.jpg",
-  "created_date": "2020-11-27T12:28:00.481Z"
+  "offer_picture": "picture.jpg"
+}
+
+
+### Update existing offer (invalid data)
+### You should be in login mode
+### Response: 400
+PUT http://localhost:3000/api/offers/1
+Content-Type: application/json
+
+{
+  "title": "Текст",
+  "description": "Описание",
+  "categories": [],
+  "sum": 80,
+  "type": "Куплю",
+  "offer_picture": "picture.jpg"
 }
 
 
@@ -145,20 +160,31 @@ DELETE http://localhost:3000/api/offers/dfkn43
 Content-Type: application/json
 
 
-### Create new comment in existing offer id=1
+### Create new comment in existing offer id=1 (valid data)
 ### You should be in login mode
 ### Response: 201 "Comment is created"
 POST http://localhost:3000/api/offers/1/comments
 Content-Type: application/json
 
 {
-  "text": "Неплохо, но дорого."
+  "text": "Валидный комментарий более 20 символов"
+}
+
+
+### Create new comment in existing offer id=1 (invalid data)
+### You should be in login mode
+### Response: 400
+POST http://localhost:3000/api/offers/1/comments
+Content-Type: application/json
+
+{
+  "text": "Текст"
 }
 
 
 ### Create new comment in non-existing offer id=1234567
 ### You should be in login mode
-### Response: 201 "Data is nor exist"
+### Response: 400 "Data is nor exist"
 POST http://localhost:3000/api/offers/1234567/comments
 Content-Type: application/json
 
@@ -169,7 +195,7 @@ Content-Type: application/json
 
 ### Create new comment in non-existing offer id=asdfas
 ### You should be in login mode
-### Response: 201 "Incorrect id"
+### Response: 400 "Incorrect id"
 POST http://localhost:3000/api/offers/asdfas/comments
 Content-Type: application/json
 

@@ -117,7 +117,7 @@ offersRouter.get(
         const offer = await api.getOffer(req.params.offerId);
         const auth = await api.getAuth();
 
-        res.render(`ticket-edit`, {
+        res.status(req.apiStatus).render(`ticket-edit`, {
           auth,
           offer,
           categories,
@@ -158,15 +158,18 @@ offersRouter.post(
 
 offersRouter.get(
     `/:offerId`,
+    checkApiReply(),
     async (req, res) => {
       try {
         const auth = await api.getAuth();
         const offer = await api.getOffer(req.params.offerId);
 
-        res.render(`ticket`, {
+        res.status(req.apiStatus).render(`ticket`, {
           auth,
           offer,
           getHumanDate,
+          data: req.apiData,
+          errors: req.apiErrors,
         });
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
@@ -189,9 +192,8 @@ offersRouter.post(
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
       } catch (error) {
+        res.redirect(`/offers/${req.params.offerId}?data=${JSON.stringify(error.response.data)}`);
         logger.error(`Error occurs: ${error}`);
-
-        res.redirect(`/offers/${req.params.offerId}`);
       }
     }
 );

@@ -46,9 +46,11 @@ block content
                 p.comment-form__author Вам слово
               .comment-form__field
                 .form__field
-                  textarea#comment-field.js-field(name="text" cols="30" rows="10" maxlength="400" minlength="50") Нормальное вообще кресло! А как насч
+                  textarea#comment-field.js-field(name="text" cols="30" rows="10")= data ? data[`text`] : ""
                   label(for="comment-field") Текст комментария
                   span Обязательное поле
+                  - const commentError = errors ? errors.find((error) => error.label === "text") : null
+                  div(style={color: `red`})= commentError ? commentError.message : ""
               button.comment-form__button.btn.btn--white.js-button(type="submit") Отправить
           .ticket__comments-list
             ul.comments-list

@@ -347,7 +347,7 @@ describe(`When POST '/${PathName.OFFERS}' in logout mode`, () => {
 });
 
 
-describe(`When PUT valid '${PathName.OFFERS}/${Offer.RIGHT_ID} in login mode'`, () => {
+describe(`When PUT valid data '${PathName.OFFERS}/${Offer.RIGHT_ID} in login mode'`, () => {
   const app = createAPI();
 
   let response;
@@ -383,7 +383,7 @@ describe(`When PUT valid '${PathName.OFFERS}/${Offer.RIGHT_ID} in login mode'`, 
 });
 
 
-describe(`When PUT invalid '${PathName.OFFERS}/${Offer.RIGHT_ID} in login mode'`, () => {
+describe(`When PUT invalid data '${PathName.OFFERS}/${Offer.RIGHT_ID} in login mode'`, () => {
   const app = createAPI();
 
   let response;
@@ -609,13 +609,13 @@ describe(`When PUT '${PathName.OFFERS}/${Offer.NON_EXIST_ID} in logout mode'`, (
 });
 
 
-describe(`When POST '/${PathName.OFFERS}/${Offer.RIGHT_ID}/comments' in login mode`, () => {
+describe(`When POST valid data '/${PathName.OFFERS}/${Offer.RIGHT_ID}/comments' in login mode`, () => {
   const app = createAPI();
 
   let response;
 
   const mockComment = {
-    text: `Текст нового комментария`,
+    text: `Валидный комментарий длиной более 20 символов`,
   };
 
   beforeAll(async () => {
@@ -636,7 +636,45 @@ describe(`When POST '/${PathName.OFFERS}/${Offer.RIGHT_ID}/comments' in login mo
   test(`Response should be 'Comment is created'`, () => {
     expect(response.body).toBe(`Comment is created`);
   });
+});
 
+
+describe(`When POST invalid data '/${PathName.OFFERS}/${Offer.RIGHT_ID}/comments' in login mode`, () => {
+  const app = createAPI();
+
+  let response;
+
+  const mockComment = {
+    text: `Невалидный`,
+  };
+
+  const expectedReply = {
+    data: mockComment,
+    errors: [{
+      label: `text`,
+      message: `Длина должна быть не менее 20 символов`,
+    }],
+    status: HttpCode.BAD_REQUEST,
+  };
+
+  beforeAll(async () => {
+    await loginByAuthorId(Author.RIGHT_ID, fakeDb);
+    response = await request(app)
+      .post(`/${PathName.OFFERS}/${Offer.RIGHT_ID}/comments`)
+      .send(mockComment);
+  });
+
+  afterAll(async () => {
+    await logoutByAuthorId(Author.RIGHT_ID, fakeDb);
+  });
+
+  test(`status code should be ${HttpCode.BAD_REQUEST}`, () => {
+    expect(response.statusCode).toBe(HttpCode.BAD_REQUEST);
+  });
+
+  test(`Response should be the object with special structure`, () => {
+    expect(response.body).toStrictEqual(expectedReply);
+  });
 });
 
 
