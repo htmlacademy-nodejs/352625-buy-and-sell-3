@@ -1,57 +1,207 @@
-###
+### Get all offers
+### Response: 200 json-object
+GET http://localhost:3000/api/offers
 
+
+### Get offers by existing AuthorId
+### Response: 200 json-object
+GET http://localhost:3000/api/offers/byAuthorId/1
+
+
+### Get offers by non-existing integer AuthorId
+### Response: 200 empty array
+GET http://localhost:3000/api/offers/byAuthorId/123456
+
+
+### Get offers by non-existing non-integer AuthorId
+### Response: 400 empty array
+GET http://localhost:3000/api/offers/byAuthorId/asdv34
+
+
+### Get most discussed offers
+### Response: 200 json-object
+GET http://localhost:3000/api/offers/mostDiscussed
+
+
+### Get most fresh offers
+### Response: 200 json-object
+GET http://localhost:3000/api/offers/fresh
+
+
+### Get existing offer id=1
+### Response: 200 json-object
+GET http://localhost:3000/api/offers/1
+
+
+### Get non-existing integer offer id=1234567
+### Response: 400 "Data is not exist"
+GET http://localhost:3000/api/offers/1234567
+
+
+### Get non-existing non-integer offer id=ankdjngf
+### Response: 400 "Incorrect id"
+GET http://localhost:3000/api/offers/ankdjngf
+
+
+### Create new offer (valid data)
+### You should be in login mode
+### Response: 201 "Offer is created"
 POST http://localhost:3000/api/offers
 Content-Type: application/json
 
 {
-  "id": "abc001",
-  "category": [
-    "Разное"
-  ],
-  "description": "Таких предложений больше нет! При покупке с меня бесплатная доставка в черте города.",
-  "picture": "item02.jpg",
-  "title": "Продам отличную подборку фильмов на VHS",
-  "type": "offer",
-  "sum": 99927,
-  "comments": [
-    {
-      "id": "abc1",
-      "text": "Неплохо, но дорого."
-    },
-    {
-      "id": "abc2",
-      "text": "С чем связана продажа? Почему так дешёво?"
-    }
-  ]
+  "title": "Тестовый заголовок объявления",
+  "description": "Описательная часть объявления должна быть не менее 50 символов",
+  "categories": [1, 2],
+  "sum": 123,
+  "type": "Продам",
+  "offer_picture": "picture.jpg"
 }
 
-###
 
-PUT http://localhost:3000/api/offers/ididid
+### Create new offer (invalid data)
+### You should be in login mode
+### Response: 400
+POST http://localhost:3000/api/offers
 Content-Type: application/json
 
 {
-  "sum": 123456
+  "title": "Заголовок",
+  "description": "Описательная часть",
+  "sum": 10,
+  "type": "Sale"
 }
 
-###
 
-DELETE http://localhost:3000/api/offers/bqAVEA
-Content-Type: application/json
-
-###
-
-DELETE http://localhost:3000/api/offers/bqAVEA/comments/XhOq
-Content-Type: application/json
-
-###
-
-PUT http://localhost:3000/api/offers/1/comments
+### Update existing offer (valid data)
+### You should be in login mode
+### Response: 201 "Offer is changed"
+PUT http://localhost:3000/api/offers/1
 Content-Type: application/json
 
 {
-  "id": "1234",
+  "title": "Тестовый заголовок объявления",
+  "description": "Описательная часть объявления должна быть не менее 50 символов",
+  "categories": [1, 3, 4],
+  "sum": 2100,
+  "type": "Куплю",
+  "offer_picture": "picture.jpg"
+}
+
+
+### Update existing offer (invalid data)
+### You should be in login mode
+### Response: 400
+PUT http://localhost:3000/api/offers/1
+Content-Type: application/json
+
+{
+  "title": "Текст",
+  "description": "Описание",
+  "categories": [],
+  "sum": 80,
+  "type": "Куплю",
+  "offer_picture": "picture.jpg"
+}
+
+
+### Update non-existing offer (integer id)
+### You should be in login mode
+### Response: 400 "Data is not exist"
+PUT http://localhost:3000/api/offers/1234567
+Content-Type: application/json
+
+{
+  "title": "Тестовый заголовок объявления",
+  "description": "Описательная часть объявления",
+  "category": ["1", "3", "4"],
+  "sum": 2100,
+  "type": "Куплю",
+  "offer_picture": "picture.jpg",
+  "created_date": "2020-11-27T12:28:00.481Z"
+}
+
+
+### Update non-existing offer (non-integer id)
+### You should be in login mode
+### Response: 400 "Incorrect id"
+PUT http://localhost:3000/api/offers/abcd123
+Content-Type: application/json
+
+{
+  "title": "Тестовый заголовок объявления",
+  "description": "Описательная часть объявления",
+  "category": ["1", "3", "4"],
+  "sum": 2100,
+  "type": "Куплю",
+  "offer_picture": "picture.jpg",
+  "created_date": "2020-11-27T12:28:00.481Z"
+}
+
+
+### Delete existing offer (Response code: 200)
+### You should be in login mode
+### Response: 200 "Offer is deleted"
+DELETE http://localhost:3000/api/offers/1
+Content-Type: application/json
+
+
+### Delete non-existing offer (integer id)
+### You should be in login mode
+### Response: 400 "Data is not exist"
+DELETE http://localhost:3000/api/offers/1234567
+Content-Type: application/json
+
+
+### Delete non-existing offer (non-integer id)
+### You should be in login mode
+### Response: 400 "Incorrect id"
+DELETE http://localhost:3000/api/offers/dfkn43
+Content-Type: application/json
+
+
+### Create new comment in existing offer id=1 (valid data)
+### You should be in login mode
+### Response: 201 "Comment is created"
+POST http://localhost:3000/api/offers/1/comments
+Content-Type: application/json
+
+{
+  "text": "Валидный комментарий более 20 символов"
+}
+
+
+### Create new comment in existing offer id=1 (invalid data)
+### You should be in login mode
+### Response: 400
+POST http://localhost:3000/api/offers/1/comments
+Content-Type: application/json
+
+{
+  "text": "Текст"
+}
+
+
+### Create new comment in non-existing offer id=1234567
+### You should be in login mode
+### Response: 400 "Data is nor exist"
+POST http://localhost:3000/api/offers/1234567/comments
+Content-Type: application/json
+
+{
+  "text": "Неплохо, но дорого."
+}
+
+
+### Create new comment in non-existing offer id=asdfas
+### You should be in login mode
+### Response: 400 "Incorrect id"
+POST http://localhost:3000/api/offers/asdfas/comments
+Content-Type: application/json
+
+{
   "text": "Неплохо, но дорого."
 }
 
 ###
+

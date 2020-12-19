@@ -9,7 +9,6 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-      allowNull: false,
     },
     [`type`]: {
       type: DataTypes.STRING,

@@ -10,7 +10,7 @@ const {HttpCode, PathName, Empty, SEARCH_PARAM} = require(`../constants.js`);
 const mocks = require(`../../data/db/fake/mocks.js`);
 const {fakeDb, initDb, dropDb, fakeSequelize} = require(`../../data/db/fake`);
 
-const RIGHT_SEARCH = `наручные`;
+const RIGHT_SEARCH = `Наручные`;
 const RIGHT_SEARCH_URI = encodeURI(RIGHT_SEARCH);
 
 const WRONG_SEARCH = `ылдвапрдлорвап`;
@@ -39,13 +39,26 @@ describe(`When GET '${PathName.SEARCH}${SEARCH_PARAM}${RIGHT_SEARCH_URI}'`, () =
   const app = createAPI();
 
   let response;
-  let result;
+  const result = [{
+    categories: [
+      {id: 1, name: `Книги`}, {id: 2, name: `Разное`}, {id: 3, name: `Посуда`}
+    ],
+    description: `Если найдёте дешевле — сброшу цену. Таких предложений больше нет!`,
+    id: 2,
+    picture: {
+      double: `item02@2x.jpg`,
+      normal: `item02.jpg`
+    },
+    sum: `8340`,
+    title: `наручные часы`,
+    type: {
+      name: `Продам`
+    }
+  }];
 
   beforeAll(async () => {
-    const data = await searchService.findSome(RIGHT_SEARCH);
     response = await request(app)
       .get(`/${PathName.SEARCH}${SEARCH_PARAM}${RIGHT_SEARCH_URI}`);
-    result = JSON.parse(JSON.stringify(data));
   });
 
   test(`status code should be ${HttpCode.OK}`, () => {

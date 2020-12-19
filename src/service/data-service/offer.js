@@ -192,11 +192,17 @@ class OfferService {
       },
     });
 
-    const picture = await this._database.Picture.create({
-      type: `item`,
-      normal: formData[`offer_picture`],
-      double: formData[`offer_picture`],
-    });
+    let picture = {
+      id: null,
+    };
+
+    if (formData[`offer_picture`]) {
+      picture = await this._database.Picture.create({
+        type: `item`,
+        normal: formData[`offer_picture`],
+        double: formData[`offer_picture`],
+      });
+    }
 
     const offer = await this._database.Offer.create({
       [`title`]: formData[`title`],
@@ -208,7 +214,7 @@ class OfferService {
       [`picture_id`]: picture[`id`],
     });
 
-    offer.setCategories(formData[`category`]);
+    offer.setCategories(formData[`categories`]);
   }
 
   async update(formData, offerId) {
@@ -237,7 +243,7 @@ class OfferService {
     offer[`type_id`] = type[`id`];
     offer[`picture_id`] = picture[`id`];
 
-    offer.setCategories(formData[`category`]);
+    offer.setCategories(formData[`categories`]);
 
     await offer.save();
   }

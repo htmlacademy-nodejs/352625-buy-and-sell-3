@@ -15,8 +15,9 @@ class SearchService {
       limit: count,
       where: {
         title: {
-          // TODO Не разобрался как сделать 'case insensitive'
-          [Op.iLike]: `%${typingData}%`,
+          // TODO iLike и iRegexp не срабатывают как ожидается
+          // [Op.regexp]: `%${new RegExp(typingData)}%`,
+          [Op.iLike]: `%${typingData}`,
         }
       },
       attributes: [`id`, `title`, `description`, `sum`],

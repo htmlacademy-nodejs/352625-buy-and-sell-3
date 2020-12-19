@@ -2,9 +2,12 @@
 
 const {Router} = require(`express`);
 const {HttpCode, PathName, Empty} = require(`../constants.js`);
-const {getLogger} = require(`./../../service/logger.js`);
 
-const logger = getLogger();
+const {
+  passProperParam,
+  tryToResponse,
+  isExist,
+} = require(`../middlewares`);
 
 
 module.exports = (app, categoryService) => {
@@ -12,45 +15,19 @@ module.exports = (app, categoryService) => {
 
   app.use(`/${PathName.CATEGORIES}`, route);
 
-  route.get(`/`, async (req, res) => {
-    try {
-      const data = await categoryService.findAll();
-
-      if (!data) {
-        res.status(HttpCode.BAD_REQUEST).json(Empty.CATEGORIES);
-      } else {
-        res.status(HttpCode.OK).json(data);
-      }
-      logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
-
-    } catch (error) {
-      res.status(HttpCode.INTERNAL_SERVER_ERROR).json(`${error}`);
-      logger.error(`Error occurs: ${error}`);
-    }
-  });
+  route.get(
+      `/`,
+      isExist(categoryService.findAll.bind(categoryService)),
+      tryToResponse(HttpCode.OK)
+  );
 
 
-  route.get(`/id=:id&page=:pageNumber`, async (req, res) => {
-    try {
-      let data = null;
-      const categoryId = parseInt(req.params.id, 10);
-      const pageNumber = parseInt(req.params.pageNumber, 10);
-
-      if (categoryId && pageNumber > 0) {
-        data = await categoryService.findOne(categoryId, pageNumber);
-      }
-
-      if (!data) {
-        res.status(HttpCode.BAD_REQUEST).json(Empty.CATEGORY);
-      } else {
-        res.status(HttpCode.OK).json(data);
-      }
-      logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
-
-    } catch (error) {
-      res.status(HttpCode.INTERNAL_SERVER_ERROR).json(`${error}`);
-      logger.error(`Error occurs: ${error}`);
-    }
-  });
+  route.get(
+      `/id=:categoryId&page=:pageNumber`,
+      passProperParam(`categoryId`, Empty.CATEGORY),
+      passProperParam(`pageNumber`, Empty.CATEGORY),
+      isExist(categoryService.findOne.bind(categoryService), `categoryId`, `pageNumber`),
+      tryToResponse(HttpCode.OK)
+  );
 };
 

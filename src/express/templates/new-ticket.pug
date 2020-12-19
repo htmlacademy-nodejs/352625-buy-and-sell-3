@@ -7,40 +7,88 @@ block content
       .ticket-form__wrapper
         h1.ticket-form__title Новая публикация
         .ticket-form__tile
-          form.ticket-form__form.form(action="/offers/add" method="post" autocomplete="off" enctype="multipart/form-data")
+          form.ticket-form__form.form(
+            action="/offers/add"
+            method="post"
+            enctype="multipart/form-data"
+            autocomplete="off"
+          )
             .ticket-form__avatar-container.js-preview-container
               .ticket-form__avatar.js-preview
               .ticket-form__field-avatar
-                input#avatar.visually-hidden.js-file-field(type="file" name="offer_picture" required="")
+                - const pictureError = errors ? errors.find((error) => error.label === "offer_picture") : null
+                div(style={color: `red`})= pictureError ? pictureError.message : ""
+                input#avatar.visually-hidden.js-file-field(type="file" name="offer_picture" accept="image/jpeg,image/x-png")
                 label(for="avatar")
                   span.ticket-form__text-upload Загрузить фото…
                   span.ticket-form__text-another Загрузить другое фото…
             .ticket-form__content
               .ticket-form__row
                 .form__field
-                  input#ticket-name.js-field(type="text" name="title" required="")
+                  input#ticket-name.js-field(
+                    type="text"
+                    name="title"
+                    value=`${data ? data[`title`] : ""}`
+                    maxlength="100"
+                  )
                   label(for="ticket-name") Название
                   span Обязательное поле
+                  - const titleError = errors ? errors.find((error) => error.label === "title") : null
+                  div(style={color: `red`})= titleError ? titleError.message : ""
               .ticket-form__row
                 .form__field
-                  textarea#comment-field.js-field(name="description" cols="30" rows="10" maxlength="400" minlength="50")
+                  textarea#comment-field.js-field(
+                    name="description"
+                    cols="30"
+                    rows="10"
+                    maxlength="1000"
+                  )= data ? data[`description`] : ""
                   label(for="comment-field") Описание
                   span Обязательное поле
+                  - const descriptionError = errors ? errors.find((error) => error.label === "description") : null
+                  div(style={color: `red`})= descriptionError ? descriptionError.message : ""
+              - const categoriesError = errors ? errors.find((error) => error.label === "categories") : null
+              div(style={color: `red`})= categoriesError ? categoriesError.message : ""
               .ticket-form__row
-                select#category-field.form__select.js-multiple-select(name="category" data-label="Выбрать категорию публикации")
+                select#category-field.form__select.js-multiple-select(
+                  name="categories"
+                  data-label="Выбрать категорию публикации"
+                  multiple=""
+                )
                   each category in categories
-                    option(value=`${category.id}`)= category.name
+                    option(
+                      value=`${category.id}`
+                      selected=((data && data.categories) ? data.categories.find((item) => item === category.id) : false)
+                    )= category.name
               .ticket-form__row
                 .form__field.form__field--price
-                  input#price-field.js-field.js-price(type="number" name="sum" min="1" required="")
+                  input#price-field.js-field.js-price(
+                    type="number"
+                    name="sum"
+                    value=`${data ? data[`sum`] : ""}`
+                  )
                   label(for="price-field") Цена
                   span Обязательное поле
+                - const sumError = errors ? errors.find((error) => error.label === "sum") : null
+                div(style={color: `red`})= sumError ? sumError.message : ""
                 .form__switch.switch
                   .switch__item
-                    input#buy-field.visually-hidden(type="radio" name="type" value="Куплю")
+                    input#buy-field.visually-hidden(
+                      type="radio"
+                      name="type"
+                      value="Куплю"
+                      checked=((data && data[`type`] === "Куплю") ? data[`type`] : false)
+                    )
                     label.switch__button(for="buy-field") Куплю
                   .switch__item
-                    input#sell-field.visually-hidden(type="radio" name="type" value="Продам")
+                    input#sell-field.visually-hidden(
+                      type="radio"
+                      name="type"
+                      value="Продам"
+                      checked=((data && data[`type`] === "Продам") ? data[`type`] : false)
+                    )
                     label.switch__button(for="sell-field") Продам
+                - const typeError = errors ? errors.find((error) => error.label === "type") : null
+                div(style={color: `red`})= typeError ? typeError.message : ""
             button.form__button.btn.btn--medium.js-button(type="submit" disabled="") Опубликовать
 

@@ -21,7 +21,7 @@ const app = new Router();
 (async () => {
   auth(app, new AuthService());
   category(app, new CategoryService());
-  comment(app, new CommentService());
+  comment(app, new CommentService(), new AuthService());
   search(app, new SearchService());
   offer(app, new OfferService(), new CommentService(), new AuthService());
 })();

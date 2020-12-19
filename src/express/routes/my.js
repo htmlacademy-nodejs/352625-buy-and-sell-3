@@ -3,33 +3,30 @@
 const {Router} = require(`express`);
 
 const {getHumanDate} = require(`./../utils.js`);
-const {render404Page, render500Page} = require(`./render.js`);
+const {render500Page} = require(`./render.js`);
 const api = require(`../api.js`).getApi();
 const {getLogger} = require(`./../../service/logger.js`);
 
 const logger = getLogger();
 
+const {isAuth} = require(`../middlewares`);
+
 const myRouter = new Router();
 
 myRouter.get(
     `/`,
+    isAuth(api.getAuth.bind(api)),
     async (req, res) => {
       try {
-        const auth = await api.getAuth();
         const reqUrl = req.originalUrl;
+        const myOffers = await api.getMyOffers(res.auth.user.id);
 
-        if (!auth.status || typeof auth.user.id !== `number`) {
-          render404Page(req, res);
-        } else {
-          const myOffers = await api.getMyOffers(auth.user.id);
-
-          res.render(`my-tickets`, {
-            reqUrl,
-            auth,
-            myOffers,
-            getHumanDate,
-          });
-        }
+        res.render(`my-tickets`, {
+          reqUrl,
+          auth: res.auth,
+          myOffers,
+          getHumanDate,
+        });
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
       } catch (error) {
@@ -43,22 +40,17 @@ myRouter.get(
 
 myRouter.get(
     `/comments`,
+    isAuth(api.getAuth.bind(api)),
     async (req, res) => {
       try {
-        const auth = await api.getAuth();
         const reqUrl = req.originalUrl;
+        const myOffers = await api.getMyOffers(res.auth.user.id);
 
-        if (!auth.status || typeof auth.user.id !== `number`) {
-          render404Page(req, res);
-        } else {
-          const myOffers = await api.getMyOffers(auth.user.id);
-
-          res.render(`comments`, {
-            reqUrl,
-            auth,
-            myOffers,
-          });
-        }
+        res.render(`comments`, {
+          reqUrl,
+          auth: res.auth,
+          myOffers,
+        });
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
       } catch (error) {
@@ -71,11 +63,10 @@ myRouter.get(
 
 myRouter.post(
     `/offers/delete/:offerId`,
+    isAuth(api.getAuth.bind(api)),
     async (req, res) => {
       try {
-        const offerId = parseInt(req.params.offerId, 10);
-
-        await api.deleteOffer(offerId);
+        await api.deleteOffer(req.params.offerId);
 
         res.redirect(`/my/`);
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
@@ -88,20 +79,24 @@ myRouter.post(
 );
 
 
-myRouter.post(`/comments/delete/:commentId`, async (req, res) => {
-  try {
-    const commentId = parseInt(req.params.commentId, 10);
+myRouter.post(
+    `/comments/delete/:commentId`,
+    isAuth(api.getAuth.bind(api)),
+    async (req, res) => {
+      try {
+        const commentId = parseInt(req.params.commentId, 10);
 
-    await api.deleteComment(commentId);
+        await api.deleteComment(commentId);
 
-    res.redirect(`/my/comments/`);
-    logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
+        res.redirect(`/my/comments/`);
+        logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
-  } catch (error) {
-    logger.error(`Error occurs: ${error}`);
-    res.redirect(`/my/comments/`);
-  }
-});
+      } catch (error) {
+        logger.error(`Error occurs: ${error}`);
+        res.redirect(`/my/comments/`);
+      }
+    }
+);
 
 
 module.exports = myRouter;
