@@ -9,23 +9,20 @@ const {getLogger} = require(`./../../service/logger.js`);
 
 const logger = getLogger();
 
-const {checkApiReply, uploadFile, saveFileNameToBody, isAuth} = require(`../middlewares`);
+const {uploadFile, saveFileNameToBody, isAuth} = require(`../middlewares`);
 
 const offersRouter = new Router();
 
 offersRouter.get(
     `/add`,
     isAuth(api.getAuth.bind(api)),
-    checkApiReply(),
     async (req, res) => {
       try {
-        const categories = await api.getCategories();
-
-        res.status(req.apiStatus).render(`new-ticket`, {
+        res.render(`new-ticket`, {
           auth: res.auth,
-          categories,
-          data: req.apiData,
-          errors: req.apiErrors,
+          categories: await api.getCategories(),
+          data: null,
+          errors: null,
         });
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
@@ -49,7 +46,12 @@ offersRouter.post(
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
       } catch (error) {
-        res.redirect(`/offers/add?data=${JSON.stringify(error.response.data)}`);
+        res.status(error.response.data[`status`]).render(`new-ticket`, {
+          auth: res.auth,
+          categories: await api.getCategories(),
+          data: error.response.data[`data`],
+          errors: error.response.data[`errors`],
+        });
         logger.error(`Error occurs: ${error}`);
       }
     }
@@ -88,18 +90,14 @@ offersRouter.get(
 offersRouter.get(
     `/edit/:offerId`,
     isAuth(api.getAuth.bind(api)),
-    checkApiReply(),
     async (req, res) => {
       try {
-        const categories = await api.getCategories();
-        const offer = await api.getOffer(req.params.offerId);
-
-        res.status(req.apiStatus).render(`ticket-edit`, {
+        res.render(`ticket-edit`, {
           auth: res.auth,
-          offer,
-          categories,
-          data: req.apiData,
-          errors: req.apiErrors,
+          offer: await api.getOffer(req.params[`offerId`]),
+          categories: await api.getCategories(),
+          data: null,
+          errors: null,
         });
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
@@ -123,7 +121,13 @@ offersRouter.post(
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
       } catch (error) {
-        res.redirect(`/offers/edit/${req.params.offerId}?data=${JSON.stringify(error.response.data)}`);
+        res.status(error.response.data[`status`]).render(`ticket-edit`, {
+          auth: res.auth,
+          offer: await api.getOffer(req.params[`offerId`]),
+          categories: await api.getCategories(),
+          data: error.response.data[`data`],
+          errors: error.response.data[`errors`],
+        });
         logger.error(`Error occurs: ${error}`);
       }
     }
@@ -131,18 +135,14 @@ offersRouter.post(
 
 offersRouter.get(
     `/:offerId`,
-    checkApiReply(),
     async (req, res) => {
       try {
-        const auth = await api.getAuth();
-        const offer = await api.getOffer(req.params.offerId);
-
-        res.status(req.apiStatus).render(`ticket`, {
-          auth,
-          offer,
+        res.render(`ticket`, {
+          auth: await api.getAuth(),
+          offer: await api.getOffer(req.params[`offerId`]),
           getHumanDate,
-          data: req.apiData,
-          errors: req.apiErrors,
+          data: null,
+          errors: null,
         });
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 
@@ -158,13 +158,19 @@ offersRouter.post(
     isAuth(api.getAuth.bind(api)),
     async (req, res) => {
       try {
-        await api.postComment(req.body, req.params.offerId);
+        await api.postComment(req.body, req.params[`offerId`]);
 
-        res.redirect(`/offers/${req.params.offerId}`);
+        res.redirect(`/offers/${req.params[`offerId`]}`);
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
       } catch (error) {
-        res.redirect(`/offers/${req.params.offerId}?data=${JSON.stringify(error.response.data)}`);
+        res.status(error.response.data[`status`]).render(`ticket`, {
+          auth: await api.getAuth(),
+          offer: await api.getOffer(req.params[`offerId`]),
+          getHumanDate,
+          data: error.response.data[`data`],
+          errors: error.response.data[`errors`],
+        });
         logger.error(`Error occurs: ${error}`);
       }
     }
