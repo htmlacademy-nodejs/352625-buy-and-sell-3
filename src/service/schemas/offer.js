@@ -2,28 +2,14 @@
 
 const Joi = require(`joi`);
 
-const Title = {
-  MIN: 10,
-  MAX: 100,
-};
-
-const Description = {
-  MIN: 50,
-  MAX: 1000,
-};
-
-const Categories = {
-  MIN: 1,
-};
-
-const Sum = {
-  MIN: 100,
-};
-
-const Type = {
-  BUY: `Куплю`,
-  SELL: `Продам`,
-};
+const {
+  Title,
+  Description,
+  Sum,
+  Categories,
+  Type,
+  ErrorMessages,
+} = require(`./constants.js`);
 
 module.exports = Joi.object({
   title: Joi.string()
@@ -31,9 +17,9 @@ module.exports = Joi.object({
     .max(Title.MAX)
     .required()
     .messages({
-      'string.min': `Длина должна быть не менее {#limit} символов`,
-      'string.max': `Длина не должна превышать {#limit} символов`,
-      'any.required': `Это обязательное поле`
+      'string.min': ErrorMessages.STRING_MIN,
+      'string.max': ErrorMessages.STRING_MAX,
+      'any.required': ErrorMessages.REQUIRED,
     }),
 
   description: Joi.string()
@@ -41,9 +27,9 @@ module.exports = Joi.object({
     .max(Description.MAX)
     .required()
     .messages({
-      'string.min': `Длина должна быть не менее {#limit} символов`,
-      'string.max': `Длина не должна превышать {#limit} символов`,
-      'any.required': `Это обязательное поле`
+      'string.min': ErrorMessages.STRING_MIN,
+      'string.max': ErrorMessages.STRING_MAX,
+      'any.required': ErrorMessages.REQUIRED,
     }),
 
   categories: Joi.array()
@@ -51,24 +37,24 @@ module.exports = Joi.object({
     .min(Categories.MIN)
     .required()
     .messages({
-      'array.min': `Выберите хотя бы одну категорию`,
-      'any.required': `Это обязательное поле`
+      'array.min': ErrorMessages.MIN_CATEGORIES,
+      'any.required': ErrorMessages.REQUIRED,
     }),
 
   sum: Joi.number()
     .min(Sum.MIN)
     .required()
     .messages({
-      'number.min': `Стоимость должна быть не менее {#limit}`,
-      'any.required': `Это обязательное поле`
+      'number.min': ErrorMessages.NUMBER_MIN,
+      'any.required': ErrorMessages.REQUIRED,
     }),
 
   type: Joi.string()
     .valid(Type.BUY, Type.SELL)
     .required()
     .messages({
-      'any.only': `Невалидное значение`,
-      'any.required': `Это обязательное поле`
+      'any.only': ErrorMessages.ONLY,
+      'any.required': ErrorMessages.REQUIRED,
     }),
 
 

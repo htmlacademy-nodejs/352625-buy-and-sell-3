@@ -89,6 +89,17 @@ class Api {
   search(query) {
     return this._load(`/${PathName.SEARCH}`, {params: {query}});
   }
+
+  register(data) {
+    return this._load(`/${PathName.USER}`, {
+      method: `POST`,
+      data
+    });
+  }
+
+  login() {}
+
+  logout() {}
 }
 
 const defaultApi = new Api(defaultURL, TIMEOUT);

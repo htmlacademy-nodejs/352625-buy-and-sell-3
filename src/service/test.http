@@ -203,5 +203,17 @@ Content-Type: application/json
   "text": "Неплохо, но дорого."
 }
 
+### Post new user (Response code: 201)
+POST http://localhost:3000/api/user
+Content-Type: application/json
+
+{
+  "user-name": "Иван Петров",
+  "user-email": "ivan_petrov@local.com",
+  "user-password": "qwerty",
+  "user-password-again": "qwerty"
+}
+
+
 ###
 
