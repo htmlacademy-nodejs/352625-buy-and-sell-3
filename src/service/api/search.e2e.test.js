@@ -10,7 +10,7 @@ const {HttpCode, PathName, Empty, SEARCH_PARAM} = require(`../constants.js`);
 const mocks = require(`../../data/db/fake/mocks.js`);
 const {fakeDb, initDb, dropDb, fakeSequelize} = require(`../../data/db/fake`);
 
-const RIGHT_SEARCH = `Наручные`;
+const RIGHT_SEARCH = `НАручные`;
 const RIGHT_SEARCH_URI = encodeURI(RIGHT_SEARCH);
 
 const WRONG_SEARCH = `ылдвапрдлорвап`;

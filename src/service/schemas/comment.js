@@ -2,10 +2,7 @@
 
 const Joi = require(`joi`);
 
-const Text = {
-  MIN: 20,
-  MAX: 150,
-};
+const {Text, ErrorMessages} = require(`./constants.js`);
 
 module.exports = Joi.object({
   text: Joi.string()
@@ -14,8 +11,8 @@ module.exports = Joi.object({
     .required()
     .empty(``)
     .messages({
-      'string.min': `Длина должна быть не менее {#limit} символов`,
-      'string.max': `Длина не должна превышать {#limit} символов`,
-      'any.required': `Комментарий не может быть пустым`,
+      'string.min': ErrorMessages.STRING_MIN,
+      'string.max': ErrorMessages.STRING_MAX,
+      'any.required': ErrorMessages.REQUIRED,
     }),
 });

@@ -16,11 +16,9 @@ module.exports = (sequelize) => {
     },
     [`normal`]: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     [`double`]: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
   }, {
     sequelize,

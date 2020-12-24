@@ -17,7 +17,7 @@ class SearchService {
         title: {
           // TODO iLike и iRegexp не срабатывают как ожидается
           // [Op.regexp]: `%${new RegExp(typingData)}%`,
-          [Op.iLike]: `%${typingData}`,
+          [Op.iLike]: `%${typingData}%`,
         }
       },
       attributes: [`id`, `title`, `description`, `sum`],

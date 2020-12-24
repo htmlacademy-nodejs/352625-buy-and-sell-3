@@ -16,6 +16,7 @@ const PathName = {
   SEARCH: `api/search`,
   AUTH: `api/auth`,
   COMMENTS: `api/comments`,
+  USER: `api/user`,
 };
 
 const Empty = {

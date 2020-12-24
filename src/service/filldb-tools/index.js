@@ -18,10 +18,10 @@ const getOffersCategories = require(`./offers-categories.js`);
 
 const getComments = require(`./comments.js`);
 
-const getContent = (count, authUserId, categoriesSentences, users, sentences, titles, commentsSentences) => {
+const getContent = async (count, authUserId, categoriesSentences, users, sentences, titles, commentsSentences) => {
   const types = getTypes(OfferType);
   const pictures = getPictures(count, categoriesSentences, users);
-  const authors = getAuthors(users, pictures);
+  const authors = await getAuthors(users, pictures);
 
   const auths = getAuth(users, authUserId);
   const categories = getCategories(categoriesSentences, pictures);
