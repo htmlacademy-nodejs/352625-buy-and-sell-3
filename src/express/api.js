@@ -97,9 +97,18 @@ class Api {
     });
   }
 
-  login() {}
+  login(data) {
+    return this._load(`/${PathName.USER}/login`, {
+      method: `POST`,
+      data,
+    });
+  }
 
-  logout() {}
+  logout() {
+    return this._load(`/${PathName.USER}/logout`, {
+      method: `POST`,
+    });
+  }
 }
 
 const defaultApi = new Api(defaultURL, TIMEOUT);

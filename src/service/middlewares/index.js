@@ -7,6 +7,7 @@ const validateOffer = require(`./validate-offer.js`);
 const validateComment = require(`./validate-comment.js`);
 const validateUser = require(`./validate-user.js`);
 const isExist = require(`./is-exist.js`);
+const authenticate = require(`./authenticate.js`);
 
 module.exports = {
   passProperParam,
@@ -16,4 +17,5 @@ module.exports = {
   validateComment,
   validateUser,
   isExist,
+  authenticate,
 };
