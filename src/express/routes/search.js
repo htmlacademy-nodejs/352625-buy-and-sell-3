@@ -4,6 +4,7 @@ const {Router} = require(`express`);
 
 const {render500Page} = require(`./render.js`);
 const api = require(`../api.js`).getApi();
+const {setDefaultAuthStatus} = require(`../middlewares`);
 const {getLogger} = require(`./../../service/logger.js`);
 
 const logger = getLogger();
@@ -12,6 +13,7 @@ const searchRouter = new Router();
 
 searchRouter.get(
     `/`,
+    setDefaultAuthStatus(),
     async (req, res) => {
       try {
         const auth = await api.getAuth();

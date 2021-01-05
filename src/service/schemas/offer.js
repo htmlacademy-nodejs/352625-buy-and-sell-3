@@ -58,5 +58,14 @@ module.exports = Joi.object({
     }),
 
 
-  [`offer_picture`]: Joi.string()
+  offerPicture: Joi.string(),
+
+  userId: Joi.number()
+    .integer()
+    .required()
+    .messages({
+      'any.required': ErrorMessages.REQUIRED,
+    }),
+
+  offerId: Joi.number().integer(),
 });

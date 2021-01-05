@@ -29,13 +29,4 @@ module.exports = (app, userService) => {
       authenticate(userService),
       tryToResponse(HttpCode.OK)
   );
-
-  route.post(
-      `/logout`,
-      async (req, res, next) => {
-        await userService.logout();
-        next();
-      },
-      tryToResponse(HttpCode.OK)
-  );
 };

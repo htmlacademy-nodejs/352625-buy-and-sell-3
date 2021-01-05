@@ -4,6 +4,7 @@ const {Router} = require(`express`);
 
 const {render404Page} = require(`./render.js`);
 const api = require(`../api.js`).getApi();
+const {setDefaultAuthStatus} = require(`../middlewares`);
 const {getLogger} = require(`./../../service/logger.js`);
 
 const logger = getLogger();
@@ -12,20 +13,15 @@ const homeRouter = new Router();
 
 homeRouter.get(
     `/`,
+    setDefaultAuthStatus(),
     async (req, res) => {
       try {
-        const offers = await api.getOffers();
-        const categories = await api.getCategories();
-        const auth = await api.getAuth();
-        const freshItems = await api.getFreshItems();
-        const mostDiscussedItems = await api.getMostDiscussed();
-
         res.render(`main`, {
-          auth,
-          offers,
-          categories,
-          freshItems,
-          mostDiscussedItems,
+          auth: req.session[`auth`],
+          offers: await api.getOffers(),
+          categories: await api.getCategories(),
+          freshItems: await api.getFreshItems(),
+          mostDiscussedItems: await api.getMostDiscussed(),
         });
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
 

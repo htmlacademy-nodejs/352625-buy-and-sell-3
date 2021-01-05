@@ -5,17 +5,17 @@ const {HttpCode, PathName, Empty} = require(`../constants.js`);
 
 const {
   passProperParam,
-  isAuth,
   tryToResponse,
   validateOffer,
-  validateComment,
-  isExist,
+  isSomeData,
+  isUser,
+  isOfferExist,
+  isOwner,
 } = require(`../middlewares`);
 
 const offerSchema = require(`../schemas/offer.js`);
-const commentSchema = require(`../schemas/comment.js`);
 
-module.exports = (app, offerService, commentService, authService) => {
+module.exports = (app, offerService, commentService, userService) => {
   const route = new Router();
 
   app.use(`/${PathName.OFFERS}`, route);
@@ -52,7 +52,7 @@ module.exports = (app, offerService, commentService, authService) => {
   route.get(
       `/:offerId`,
       passProperParam(`offerId`, `Incorrect id`),
-      isExist(offerService.findOne.bind(offerService), `offerId`),
+      isSomeData(offerService.findOne.bind(offerService), `offerId`),
       async (req, res, next) => {
         res.body = await offerService.findOne(req.params[`offerId`]);
         next();
@@ -85,10 +85,11 @@ module.exports = (app, offerService, commentService, authService) => {
 
   route.post(
       `/`,
-      isAuth(authService.get.bind(authService)),
+      isUser(userService),
       validateOffer(offerSchema),
       async (req, res, next) => {
-        await offerService.add(req.body, res.auth.user.id);
+        const {userId, title, description, categories, sum, type, offerPicture} = req.body;
+        await offerService.add({userId, title, description, categories, sum, type, offerPicture});
         res.body = `Offer is created`;
         next();
       },
@@ -97,13 +98,14 @@ module.exports = (app, offerService, commentService, authService) => {
 
 
   route.put(
-      `/:offerId`,
-      isAuth(authService.get.bind(authService)),
-      passProperParam(`offerId`, `Incorrect id`),
-      isExist(offerService.findOne.bind(offerService), `offerId`),
+      `/`,
+      isUser(userService),
+      isOfferExist(offerService),
+      isOwner(offerService, `offerId`),
       validateOffer(offerSchema),
       async (req, res, next) => {
-        await offerService.update(req.body, req.params[`offerId`]);
+        const {title, description, categories, sum, type, offerPicture, offerId} = req.body;
+        await offerService.update({title, description, categories, sum, type, offerPicture, offerId});
         res.body = `Offer is changed`;
         next();
       },
@@ -112,31 +114,17 @@ module.exports = (app, offerService, commentService, authService) => {
 
 
   route.delete(
-      `/:offerId`,
-      isAuth(authService.get.bind(authService)),
-      passProperParam(`offerId`, `Incorrect id`),
-      isExist(offerService.findOne.bind(offerService), `offerId`),
+      `/`,
+      isUser(userService),
+      isOfferExist(offerService),
+      isOwner(offerService, `offerId`),
       async (req, res, next) => {
-        await offerService.delete(req.params[`offerId`]);
+        const {userId, offerId} = req.body;
+        await offerService.delete({userId, offerId});
         res.body = `Offer is deleted`;
         next();
       },
       tryToResponse(HttpCode.OK)
-  );
-
-
-  route.post(
-      `/:offerId/comments`,
-      isAuth(authService.get.bind(authService)),
-      passProperParam(`offerId`, `Incorrect id`),
-      isExist(offerService.findOne.bind(offerService), `offerId`),
-      validateComment(commentSchema),
-      async (req, res, next) => {
-        await commentService.add(req.body, req.params[`offerId`], res.auth.user.id);
-        res.body = `Comment is created`;
-        next();
-      },
-      tryToResponse(HttpCode.CREATED)
   );
 };
 

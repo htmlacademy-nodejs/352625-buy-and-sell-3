@@ -11,7 +11,7 @@ const mocks = require(`../../data/db/fake/mocks.js`);
 const {fakeDb, initDb, dropDb, fakeSequelize} = require(`../../data/db/fake`);
 
 const Category = {
-  RIGHT_ID: 1,
+  RIGHT_ID: 2,
   WRONG_ID: `wr0ng1d`,
 };
 

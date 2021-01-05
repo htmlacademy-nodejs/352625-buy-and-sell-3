@@ -17,7 +17,6 @@ const {
   Type,
   Picture,
   Author,
-  Auth,
   Category,
   Offer,
   OfferCategory,
@@ -36,7 +35,6 @@ const initDb = async (content, orm) => {
     await Type.bulkCreate(content.types);
     await Picture.bulkCreate(content.pictures);
     await Author.bulkCreate(content.authors);
-    await Auth.bulkCreate(content.auths);
     await Category.bulkCreate(content.categories);
     await Offer.bulkCreate(content.offers);
     await OfferCategory.bulkCreate(content.offersCategories);
@@ -63,7 +61,6 @@ module.exports = {
     Type,
     Picture,
     Author,
-    Auth,
     Category,
     Offer,
     OfferCategory,

@@ -11,6 +11,11 @@ class UserService {
     this._database = database;
   }
 
+  async isUser(userId) {
+    const user = await this._database.Author.findByPk(userId);
+    return !!user;
+  }
+
   async findOneByEmail(email) {
     return await this._database.Author.findOne({where: {email}});
   }
@@ -24,40 +29,34 @@ class UserService {
 
     const [firstname, lastname] = getFirstAndLastName(formData[`user-name`]);
 
-    const user = await this._database.Author.create({
+    return await this._database.Author.create({
       firstname,
       lastname,
       email: formData[`user-email`],
       password: await bcrypt.hash(formData[`user-password`], saltRounds),
       [`picture_id`]: picture[`id`],
     });
-
-    await this._database.Auth.create({
-      [`is_auth`]: false,
-      [`author_id`]: user[`id`],
-    });
-
-    return user;
   }
 
   async checkUser(user, formData) {
     return await bcrypt.compare(formData[`password`], user[`password`]);
   }
 
-  async login(user) {
-    await this._database.Auth.update({[`is_auth`]: false}, {where: {[`is_auth`]: true}});
+  async getAuth(email) {
+    return {
+      status: true,
+      user: await this._database.Author.findOne({
+        where: {
+          email
+        },
+        attributes: [`id`, `firstname`, `lastname`],
 
-    const auth = await this._database.Auth.findOne({
-      where: {
-        [`author_id`]: user[`id`]
-      }
-    });
-    auth[`is_auth`] = true;
-    await auth.save();
-  }
-
-  async logout() {
-    await this._database.Auth.update({[`is_auth`]: false}, {where: {[`is_auth`]: true}});
+        include: {
+          model: this._database.Picture,
+          as: `avatar`,
+        }
+      })
+    };
   }
 }
 

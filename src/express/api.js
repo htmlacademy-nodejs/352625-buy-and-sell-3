@@ -48,16 +48,17 @@ class Api {
     });
   }
 
-  editOffer(data, offerId) {
-    return this._load(`/${PathName.OFFERS}/${offerId}`, {
+  editOffer(data) {
+    return this._load(`/${PathName.OFFERS}`, {
       method: `PUT`,
-      data
+      data,
     });
   }
 
-  deleteOffer(offerId) {
-    return this._load(`/${PathName.OFFERS}/${offerId}}`, {
-      method: `DELETE`
+  deleteOffer(data) {
+    return this._load(`/${PathName.OFFERS}`, {
+      method: `DELETE`,
+      data,
     });
   }
 
@@ -73,16 +74,17 @@ class Api {
     return this._load(`${PathName.OFFERS}/fresh`);
   }
 
-  postComment(data, offerId) {
-    return this._load(`/${PathName.OFFERS}/${offerId}/comments`, {
+  postComment(data) {
+    return this._load(`/${PathName.COMMENTS}`, {
       method: `POST`,
       data
     });
   }
 
-  deleteComment(commentId) {
-    return this._load(`/${PathName.COMMENTS}/${commentId}}`, {
-      method: `DELETE`
+  deleteComment(data) {
+    return this._load(`/${PathName.COMMENTS}`, {
+      method: `DELETE`,
+      data,
     });
   }
 
@@ -101,12 +103,6 @@ class Api {
     return this._load(`/${PathName.USER}/login`, {
       method: `POST`,
       data,
-    });
-  }
-
-  logout() {
-    return this._load(`/${PathName.USER}/logout`, {
-      method: `POST`,
     });
   }
 }

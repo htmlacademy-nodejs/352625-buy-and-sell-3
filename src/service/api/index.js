@@ -3,7 +3,6 @@
 const {Router} = require(`express`);
 
 const offer = require(`./offer.js`);
-const auth = require(`./auth.js`);
 const category = require(`./category.js`);
 const search = require(`./search.js`);
 const comment = require(`./comment.js`);
@@ -11,7 +10,6 @@ const user = require(`./user.js`);
 
 const {
   OfferService,
-  AuthService,
   CategoryService,
   CommentService,
   SearchService,
@@ -21,11 +19,10 @@ const {
 const app = new Router();
 
 (async () => {
-  auth(app, new AuthService());
   category(app, new CategoryService());
-  comment(app, new CommentService(), new AuthService());
+  comment(app, new CommentService(), new OfferService(), new UserService());
   search(app, new SearchService());
-  offer(app, new OfferService(), new CommentService(), new AuthService());
+  offer(app, new OfferService(), new CommentService(), new UserService());
   user(app, new UserService());
 })();
 

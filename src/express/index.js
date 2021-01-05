@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require(`express`);
+const sessionMiddleware = require(`./session.js`);
 const path = require(`path`);
 
 const pino = require(`pino`)(`./src/express/logs/express.log`);
@@ -27,6 +28,8 @@ const {getLogger} = require(`./../service/logger.js`);
 const logger = getLogger();
 
 const app = express();
+
+app.use(sessionMiddleware);
 
 app.set(`views`, `./src/express/templates`);
 app.set(`view engine`, `pug`);

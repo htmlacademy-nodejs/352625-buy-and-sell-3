@@ -25,6 +25,12 @@ class CommentService {
     return await this._database.Comment.findByPk(commentId);
   }
 
+  async checkAuthorship(commentId, userId) {
+    const comment = await this.findOne(commentId);
+    const offer = await this._database.Offer.findByPk(comment[`offer_id`]);
+    return userId === offer[`author_id`];
+  }
+
   async delete(commentId) {
     await this._database.Comment.destroy({
       where: {
@@ -33,11 +39,11 @@ class CommentService {
     });
   }
 
-  async add(formData, offerId, authorId) {
+  async add({text, userId, offerId}) {
     return await this._database.Comment.create({
-      [`text`]: formData[`text`],
+      text,
       [`created_date`]: moment().toISOString(),
-      [`author_id`]: authorId,
+      [`author_id`]: userId,
       [`offer_id`]: offerId,
     });
   }
