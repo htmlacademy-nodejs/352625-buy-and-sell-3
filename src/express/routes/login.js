@@ -36,7 +36,7 @@ loginRouter.post(
       try {
         req.session[`auth`] = await api.login(req.body);
         // TODO после успешного логина - происходит редирект на главную страницу с анонимным header-ом, помогает только обновление страницы вручную.
-        res.redirect(`/`);
+        res.redirect(`..`);
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
 
       } catch (error) {
