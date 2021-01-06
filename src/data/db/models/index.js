@@ -4,11 +4,11 @@ const initModels = (orm) => {
   const Type = require(`./type.js`)(orm);
   const Picture = require(`./picture.js`)(orm);
   const Author = require(`./author.js`)(orm);
-  const Auth = require(`./auth.js`)(orm);
   const Category = require(`./category.js`)(orm);
   const Offer = require(`./offer.js`)(orm);
   const OfferCategory = require(`./offer-category.js`)(orm);
   const Comment = require(`./comment.js`)(orm);
+  const Session = require(`./session.js`)(orm);
 
   Author.belongsTo(Picture, {
     foreignKey: `picture_id`,
@@ -17,11 +17,6 @@ const initModels = (orm) => {
 
   Author.hasMany(Offer, {
     foreignKey: `author_id`,
-  });
-
-  Auth.belongsTo(Author, {
-    foreignKey: `author_id`,
-    as: `user`,
   });
 
   Category.belongsTo(Picture, {
@@ -46,6 +41,7 @@ const initModels = (orm) => {
   Offer.hasMany(Comment, {
     foreignKey: `offer_id`,
     as: `comments`,
+    onDelete: `cascade`,
   });
 
   Offer.belongsTo(Type, {
@@ -77,11 +73,11 @@ const initModels = (orm) => {
     Type,
     Picture,
     Author,
-    Auth,
     Category,
     Offer,
     OfferCategory,
     Comment,
+    Session,
   };
 };
 

@@ -19,16 +19,12 @@ const {
 } = require(`./constants.js`);
 
 const {
-  AUTH_USER_ID
-} = require(`../filldb-tools/constants.js`);
-
-const {
   getFileData,
 } = require(`../filldb-tools/utils.js`);
 
 const getContent = require(`../filldb-tools`);
 
-const generateContent = async (count, authUserId) => {
+const generateContent = async (count) => {
   const [
     users,
     categories,
@@ -45,7 +41,6 @@ const generateContent = async (count, authUserId) => {
 
   return getContent(
       count,
-      authUserId,
       categories,
       users,
       sentences,
@@ -66,7 +61,7 @@ module.exports = {
     }
 
     (async () => {
-      const content = await generateContent(postsCount, AUTH_USER_ID);
+      const content = await generateContent(postsCount);
       await initDb(content, sequelize);
       await sequelize.close();
     })();

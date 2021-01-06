@@ -53,13 +53,6 @@ const authors = [
   },
 ];
 
-const auths = [
-  {[`author_id`]: 1, [`is_auth`]: false},
-  {[`author_id`]: 2, [`is_auth`]: false},
-  {[`author_id`]: 3, [`is_auth`]: false},
-  {[`author_id`]: 4, [`is_auth`]: false},
-];
-
 const categories = [
   {name: `Книги`, [`picture_id`]: 6},
   {name: `Разное`, [`picture_id`]: 7},
@@ -101,7 +94,7 @@ const offers = [
     description: `Товар в отличном состоянии. Пользовались бережно и только по большим праздникам. Продаю с болью в сердце...`,
     [`created_date`]: `2019-01-01`,
     sum: 2000,
-    [`author_id`]: 4,
+    [`author_id`]: 3,
     [`picture_id`]: 4,
     [`type_id`]: 2,
   },
@@ -209,7 +202,6 @@ const mocks = {
   types,
   pictures,
   authors,
-  auths,
   categories,
   offers,
   offersCategories,

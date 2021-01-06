@@ -2,6 +2,12 @@ header(class= auth.status ? `header header--logged` : `header`)
   .header__wrapper
     a.header__logo.logo(href="/")
       img(src="/img/logo.svg" width="179" height="34" alt="Логотип Куплю Продам")
+    if auth.user
+      form(action="/logout" method="POST")
+        button(
+          style="background: none; border: none; padding: 10; cursor: pointer; color: rgba(255,255,255,.47);"
+          type="submit"
+        ) Выйти
     nav.header__user-menu
       ul.header__list
         li(class= reqUrl === `/my` ? `header__item header__item--active` : `header__item`)

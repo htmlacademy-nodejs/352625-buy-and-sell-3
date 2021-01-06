@@ -8,8 +8,6 @@ const getPictures = require(`./pictures.js`);
 
 const getAuthors = require(`./authors.js`);
 
-const getAuth = require(`./auths.js`);
-
 const getCategories = require(`./categories.js`);
 
 const getOffers = require(`./offers.js`);
@@ -18,12 +16,11 @@ const getOffersCategories = require(`./offers-categories.js`);
 
 const getComments = require(`./comments.js`);
 
-const getContent = async (count, authUserId, categoriesSentences, users, sentences, titles, commentsSentences) => {
+const getContent = async (count, categoriesSentences, users, sentences, titles, commentsSentences) => {
   const types = getTypes(OfferType);
   const pictures = getPictures(count, categoriesSentences, users);
   const authors = await getAuthors(users, pictures);
 
-  const auths = getAuth(users, authUserId);
   const categories = getCategories(categoriesSentences, pictures);
   const offers = getOffers(count, sentences, titles, authors, types, pictures);
 
@@ -34,7 +31,6 @@ const getContent = async (count, authUserId, categoriesSentences, users, sentenc
     types,
     pictures,
     authors,
-    auths,
     categories,
     offers,
     offersCategories,

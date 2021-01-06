@@ -42,6 +42,12 @@ const ErrorMessages = {
   RETYPE_PASSWORDS: `Пароли не совпали - повторите еще раз`,
   EMPTY_STRING: `Пустая строка`,
   STRING_PATTERN: `Введите имя и фамилию через пробел`,
+  USER_NOT_EXIST: `Такого пользователя не существует`,
+  INVALID_PASSWORD: `Неверный пароль`,
+  UNAUTHORIZED: `Доступ ограничен`,
+  OFFER_NOT_FOUND: `Запись не найдена`,
+  COMMENT_NOT_FOUND: `Комментарий не найден`,
+  DATA_NOT_FOUND: `Данные не найдены`,
 };
 
 module.exports = {

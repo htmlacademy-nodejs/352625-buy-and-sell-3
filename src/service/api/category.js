@@ -6,7 +6,7 @@ const {HttpCode, PathName, Empty} = require(`../constants.js`);
 const {
   passProperParam,
   tryToResponse,
-  isExist,
+  isSomeData,
 } = require(`../middlewares`);
 
 
@@ -17,7 +17,7 @@ module.exports = (app, categoryService) => {
 
   route.get(
       `/`,
-      isExist(categoryService.findAll.bind(categoryService)),
+      isSomeData(categoryService.findAll.bind(categoryService)),
       tryToResponse(HttpCode.OK)
   );
 
@@ -26,7 +26,7 @@ module.exports = (app, categoryService) => {
       `/id=:categoryId&page=:pageNumber`,
       passProperParam(`categoryId`, Empty.CATEGORY),
       passProperParam(`pageNumber`, Empty.CATEGORY),
-      isExist(categoryService.findOne.bind(categoryService), `categoryId`, `pageNumber`),
+      isSomeData(categoryService.findOne.bind(categoryService), `categoryId`, `pageNumber`),
       tryToResponse(HttpCode.OK)
   );
 };

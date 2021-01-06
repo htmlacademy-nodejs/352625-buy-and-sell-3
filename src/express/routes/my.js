@@ -9,21 +9,22 @@ const {getLogger} = require(`./../../service/logger.js`);
 
 const logger = getLogger();
 
-const {isAuth} = require(`../middlewares`);
+const {setDefaultAuthStatus, isUser} = require(`../middlewares`);
 
 const myRouter = new Router();
 
 myRouter.get(
     `/`,
-    isAuth(api.getAuth.bind(api)),
+    setDefaultAuthStatus(),
+    isUser(),
     async (req, res) => {
       try {
         const reqUrl = req.originalUrl;
-        const myOffers = await api.getMyOffers(res.auth.user.id);
+        const myOffers = await api.getMyOffers(req.session[`auth`][`user`][`id`]);
 
         res.render(`my-tickets`, {
           reqUrl,
-          auth: res.auth,
+          auth: req.session[`auth`],
           myOffers,
           getHumanDate,
         });
@@ -40,15 +41,16 @@ myRouter.get(
 
 myRouter.get(
     `/comments`,
-    isAuth(api.getAuth.bind(api)),
+    setDefaultAuthStatus(),
+    isUser(),
     async (req, res) => {
       try {
         const reqUrl = req.originalUrl;
-        const myOffers = await api.getMyOffers(res.auth.user.id);
+        const myOffers = await api.getMyOffers(req.session[`auth`][`user`][`id`]);
 
         res.render(`comments`, {
           reqUrl,
-          auth: res.auth,
+          auth: req.session[`auth`],
           myOffers,
         });
         logger.debug(`${req.method} ${req.url} --> res status code ${res.statusCode}`);
@@ -63,10 +65,14 @@ myRouter.get(
 
 myRouter.post(
     `/offers/delete/:offerId`,
-    isAuth(api.getAuth.bind(api)),
+    setDefaultAuthStatus(),
+    isUser(),
     async (req, res) => {
       try {
-        await api.deleteOffer(req.params.offerId);
+        const offerId = parseInt(req.params[`offerId`], 10) || null;
+        const userId = req.session[`auth`][`user`][`id`] || null;
+
+        await api.deleteOffer({userId, offerId});
 
         res.redirect(`/my/`);
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);
@@ -81,12 +87,14 @@ myRouter.post(
 
 myRouter.post(
     `/comments/delete/:commentId`,
-    isAuth(api.getAuth.bind(api)),
+    setDefaultAuthStatus(),
+    isUser(),
     async (req, res) => {
       try {
-        const commentId = parseInt(req.params.commentId, 10);
+        const commentId = parseInt(req.params.commentId, 10) || null;
+        const userId = req.session[`auth`][`user`][`id`] || null;
 
-        await api.deleteComment(commentId);
+        await api.deleteComment({userId, commentId});
 
         res.redirect(`/my/comments/`);
         logger.debug(`${req.method} ${req.originalUrl} --> res status code ${res.statusCode}`);

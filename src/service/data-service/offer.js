@@ -63,6 +63,16 @@ class OfferService {
     });
   }
 
+  async checkAuthorship(offerId, userId) {
+    return await this._database.Offer.findOne({
+      where: {
+        [`author_id`]: userId,
+        id: offerId,
+      },
+      attributes: [`id`],
+    });
+  }
+
   async findFresh() {
     return await this._database.Offer.findAll({
       attributes: [`id`, `title`, `description`, `created_date`, `sum`],
@@ -185,10 +195,10 @@ class OfferService {
     });
   }
 
-  async add(formData, authorId) {
-    const type = await this._database.Type.findOne({
+  async add({userId, title, description, categories, sum, type, offerPicture}) {
+    const offerType = await this._database.Type.findOne({
       where: {
-        name: formData[`type`]
+        name: type,
       },
     });
 
@@ -196,31 +206,31 @@ class OfferService {
       id: null,
     };
 
-    if (formData[`offer_picture`]) {
+    if (offerPicture) {
       picture = await this._database.Picture.create({
         type: `item`,
-        normal: formData[`offer_picture`],
-        double: formData[`offer_picture`],
+        normal: offerPicture,
+        double: offerPicture,
       });
     }
 
     const offer = await this._database.Offer.create({
-      [`title`]: formData[`title`],
-      [`description`]: formData[`description`],
-      [`sum`]: formData[`sum`],
+      title,
+      description,
+      sum,
       [`created_date`]: moment(Date.now()).toISOString(),
-      [`author_id`]: authorId,
-      [`type_id`]: type[`id`],
+      [`author_id`]: userId,
+      [`type_id`]: offerType[`id`],
       [`picture_id`]: picture[`id`],
     });
 
-    offer.setCategories(formData[`categories`]);
+    offer.setCategories(categories);
   }
 
-  async update(formData, offerId) {
-    const type = await this._database.Type.findOne({
+  async update({title, description, categories, sum, type, offerPicture, offerId}) {
+    const offerType = await this._database.Type.findOne({
       where: {
-        name: formData[`type`]
+        name: type,
       },
     });
 
@@ -228,30 +238,31 @@ class OfferService {
 
     let picture = {id: offer[`picture_id`]};
 
-    if (formData[`offer_picture`]) {
+    if (offerPicture) {
       picture = await this._database.Picture.create({
         type: `item`,
-        normal: formData[`offer_picture`],
-        double: formData[`offer_picture`],
+        normal: offerPicture,
+        double: offerPicture,
       });
     }
 
-    offer[`title`] = formData[`title`];
-    offer[`description`] = formData[`description`];
-    offer[`sum`] = formData[`sum`];
+    offer[`title`] = title;
+    offer[`description`] = description;
+    offer[`sum`] = sum;
     offer[`created_date`] = moment(Date.now()).toISOString();
-    offer[`type_id`] = type[`id`];
+    offer[`type_id`] = offerType[`id`];
     offer[`picture_id`] = picture[`id`];
 
-    offer.setCategories(formData[`categories`]);
+    offer.setCategories(categories);
 
     await offer.save();
   }
 
-  async delete(offerId) {
+  async delete({userId, offerId}) {
     await this._database.Offer.destroy({
       where: {
-        id: offerId
+        [`author_id`]: userId,
+        id: offerId,
       }
     });
   }

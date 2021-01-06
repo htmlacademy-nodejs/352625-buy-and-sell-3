@@ -15,8 +15,6 @@ class SearchService {
       limit: count,
       where: {
         title: {
-          // TODO iLike и iRegexp не срабатывают как ожидается
-          // [Op.regexp]: `%${new RegExp(typingData)}%`,
           [Op.iLike]: `%${typingData}%`,
         }
       },

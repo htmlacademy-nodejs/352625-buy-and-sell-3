@@ -2,7 +2,7 @@
 
 const {Router} = require(`express`);
 const {HttpCode} = require(`../constants.js`);
-const {tryToResponse, validateUser} = require(`../middlewares`);
+const {tryToResponse, validateUser, authenticate} = require(`../middlewares`);
 
 const userSchema = require(`../schemas/user.js`);
 
@@ -21,5 +21,12 @@ module.exports = (app, userService) => {
         next();
       },
       tryToResponse(HttpCode.CREATED)
+  );
+
+  route.post(
+      `/login`,
+      // validateUser(userSchema),
+      authenticate(userService),
+      tryToResponse(HttpCode.OK)
   );
 };

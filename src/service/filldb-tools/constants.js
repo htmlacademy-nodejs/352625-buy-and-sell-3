@@ -1,7 +1,5 @@
 'use strict';
 
-const AUTH_USER_ID = 0; // = 0 --> Не авторизован ни один пользователь;
-
 const OffersList = {
   OFFER: `offer`,
   SALE: `sale`,
@@ -39,15 +37,14 @@ const SumRestrict = {
   MAX: 100000,
 };
 
-const PASSWORD_LENGTH = 8;
+const DEFAULT_MOCK_PASSWORD = `qwerty1234`;
 
 module.exports = {
-  AUTH_USER_ID,
   OfferType,
   Pictures,
   Categories,
   Comments,
   Time,
   SumRestrict,
-  PASSWORD_LENGTH
+  DEFAULT_MOCK_PASSWORD,
 };

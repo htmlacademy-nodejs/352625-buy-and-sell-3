@@ -3,17 +3,31 @@ extends blocks/layout.pug
 block content
   main.page-content
     section.login
-      form.login__form.form(action="#" method="post" enctype="multipart/form-data")
+      form.login__form.form(action="/login" method="POST")
         .login__title
           a.login__link(href="/register") Регистрация
           h2 Вход
         .form__field.login__field
-          input#user-email.js-field(type="email" name="user-email" required="")
+          input#user-email.js-field(
+            type="email"
+            name="email"
+            value=`${data ? data[`email`] : ""}`
+            required=""
+          )
           label(for="user-email") Эл. почта
           span Обязательное поле
+          - const emailError = errors ? errors.find((error) => error.label === "email") : null
+          div(style={color: `red`})= emailError ? emailError.message : ""
         .form__field.login__field
-          input#user-password.js-field(type="password" name="user-password" required="")
+          input#user-password.js-field(
+            type="password"
+            name="password"
+            value=`${data ? data[`password`] : ""}`
+            required=""
+            )
           label(for="user-password") Пароль
           span Обязательное поле
+          - const passwordError = errors ? errors.find((error) => error.label === "password") : null
+          div(style={color: `red`})= passwordError ? passwordError.message : ""
         button.login__button.btn.btn--medium.js-button(type="submit" disabled="") Войти
 

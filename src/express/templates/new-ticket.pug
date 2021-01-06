@@ -16,9 +16,9 @@ block content
             .ticket-form__avatar-container.js-preview-container
               .ticket-form__avatar.js-preview
               .ticket-form__field-avatar
-                - const pictureError = errors ? errors.find((error) => error.label === "offer_picture") : null
+                - const pictureError = errors ? errors.find((error) => error.label === "offerPicture") : null
                 div(style={color: `red`})= pictureError ? pictureError.message : ""
-                input#avatar.visually-hidden.js-file-field(type="file" name="offer_picture" accept="image/jpeg,image/x-png")
+                input#avatar.visually-hidden.js-file-field(type="file" name="offerPicture" accept="image/jpeg,image/x-png")
                 label(for="avatar")
                   span.ticket-form__text-upload Загрузить фото…
                   span.ticket-form__text-another Загрузить другое фото…

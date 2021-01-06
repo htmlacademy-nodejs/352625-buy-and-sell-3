@@ -4,21 +4,26 @@ const {Router} = require(`express`);
 const {HttpCode, PathName, Empty} = require(`../constants.js`);
 
 const {
-  isAuth,
   passProperParam,
   tryToResponse,
-  isExist,
+  isSomeData,
+  isUser,
+  isOwner,
+  isCommentExist,
+  isOfferExist,
+  validateComment,
 } = require(`../middlewares`);
 
+const commentSchema = require(`../schemas/comment.js`);
 
-module.exports = (app, commentService, authService) => {
+module.exports = (app, commentService, offerService, userService) => {
   const route = new Router();
 
   app.use(`/${PathName.COMMENTS}`, route);
 
   route.get(
       `/`,
-      isExist(commentService.findAll.bind(commentService)),
+      isSomeData(commentService.findAll.bind(commentService)),
       tryToResponse(HttpCode.OK),
   );
 
@@ -26,7 +31,7 @@ module.exports = (app, commentService, authService) => {
   route.get(
       `/byOfferId/:offerId`,
       passProperParam(`offerId`, Empty.COMMENTS),
-      isExist(commentService.findAllByOfferId.bind(commentService), `offerId`),
+      isSomeData(commentService.findAllByOfferId.bind(commentService), `offerId`),
       tryToResponse(HttpCode.OK)
   );
 
@@ -34,18 +39,34 @@ module.exports = (app, commentService, authService) => {
   route.get(
       `/:commentId`,
       passProperParam(`commentId`, Empty.COMMENT),
-      isExist(commentService.findOne.bind(commentService), `commentId`),
+      isSomeData(commentService.findOne.bind(commentService), `commentId`),
       tryToResponse(HttpCode.OK)
   );
 
 
-  route.delete(
-      `/:commentId`,
-      isAuth(authService.get.bind(authService)),
-      passProperParam(`commentId`, `Incorrect id`),
-      isExist(commentService.findOne.bind(commentService), `commentId`),
+  route.post(
+      `/`,
+      isUser(userService),
+      isOfferExist(offerService),
+      validateComment(commentSchema),
       async (req, res, next) => {
-        commentService.delete(req.params[`commentId`]);
+        const {text, userId, offerId} = req.body;
+        await commentService.add({text, userId, offerId});
+        res.body = `Comment is created`;
+        next();
+      },
+      tryToResponse(HttpCode.CREATED)
+  );
+
+
+  route.delete(
+      `/`,
+      isUser(userService),
+      isCommentExist(commentService),
+      isOwner(commentService, `commentId`),
+      async (req, res, next) => {
+        const {commentId} = req.body;
+        commentService.delete(commentId);
         res.body = `Comment is deleted`;
         next();
       },

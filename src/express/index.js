@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require(`express`);
+const sessionMiddleware = require(`./session.js`);
 const path = require(`path`);
 
 const pino = require(`pino`)(`./src/express/logs/express.log`);
@@ -13,6 +14,7 @@ const {PathName, DEFAULT_PORT} = require(`./routes/constants.js`);
 const homeRouter = require(`./routes/home.js`);
 const registerRouter = require(`./routes/register.js`);
 const loginRouter = require(`./routes/login.js`);
+const logoutRouter = require(`./routes/logout.js`);
 const searchRouter = require(`./routes/search.js`);
 const offersRouter = require(`./routes/offers.js`);
 const myRouter = require(`./routes/my.js`);
@@ -27,6 +29,8 @@ const logger = getLogger();
 
 const app = express();
 
+app.use(sessionMiddleware);
+
 app.set(`views`, `./src/express/templates`);
 app.set(`view engine`, `pug`);
 
@@ -37,6 +41,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(`/`, homeRouter);
 app.use(`/${PathName.REGISTER}`, registerRouter);
 app.use(`/${PathName.LOGIN}`, loginRouter);
+app.use(`/${PathName.LOGOUT}`, logoutRouter);
 app.use(`/${PathName.SEARCH}`, searchRouter);
 app.use(`/${PathName.OFFERS}`, offersRouter);
 app.use(`/${PathName.MY}`, myRouter);
